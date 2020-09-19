@@ -11,8 +11,8 @@ Snake::Snake(Food& food) : food(food), segments(std::vector<glm::vec3>()), timeM
     food.generate(segments);
 };
 
-void Snake::render() {
-    //
+std::vector<Mesh> Snake::render() {
+    // TODO
 }
 
 void Snake::update() {
@@ -29,7 +29,26 @@ void Snake::update() {
 }
 
 void Snake::turn(Arrow arrow) {
-    //
+    switch (arrow) {
+    case Arrow::Top:
+        direction = dir::top;
+        break;
+    case Arrow::Bottom:
+        direction = dir::bottom;
+        break;
+    case Arrow::Right:
+        direction = dir::right;
+        break;
+    case Arrow::Left:
+        direction = dir::left;
+        break;
+    case Arrow::Forward:
+        direction = dir::forward;
+        break;
+    case Arrow::Back:
+        direction = dir::back;
+        break;
+    }
 }
 
 void Snake::move() {
@@ -48,7 +67,7 @@ bool Snake::isNextMovable() {
     auto next = segments.back() + direction;
 
     // Map OOB
-    if (next.x < 0 || next.y < 0 || next.z < 0 || next.x > 32 || next.y > 32 || next.z > 32) {
+    if (next.x < 0 || next.y < 0 || next.z < 0 || next.x > SIZE || next.y > SIZE || next.z > SIZE) {
         return false;
     }
 

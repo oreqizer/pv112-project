@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
+#include "mesh.hpp"
+
 #include "settings.hpp"
 #include "food.hpp"
 
@@ -22,7 +24,7 @@ public:
     Snake(Food &food);
     ~Snake() = default;
 
-    void render();
+    std::vector<Mesh> render();
     void update();
     void turn(Arrow arrow);
     void move();

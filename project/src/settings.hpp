@@ -4,12 +4,12 @@
 #define HEIGHT 720
 
 enum Arrow {
-    Up,
-    Down,
-    Left,
+    Top,
+    Bottom,
     Right,
-    SpinLeft,
-    SpinRight,
+    Left,
+    Forward,
+    Back,
 };
 
 enum State {
