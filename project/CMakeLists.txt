@@ -1,4 +1,5 @@
-add_executable(project main.cpp application.cpp)
+aux_source_directory(src SRC)
+add_executable(project main.cpp application.cpp ${SRC})
 
 add_dependencies(project glfw glad framework)
 
