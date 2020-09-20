@@ -26,15 +26,14 @@ public:
 
     std::vector<Mesh> render();
     void update();
-    void turn(Arrow arrow);
+    void turn(settings::Arrow arrow);
     void move();
     bool isNextMovable();
     bool isColliding(const glm::vec3 &pos);
 
-    Food &food;
-
-    std::vector<glm::vec3> segments;
 private:
+    Food &food;
+    std::vector<glm::vec3> segments;
     std::chrono::milliseconds timeMove;
     glm::vec3 direction = dir::forward;
 };

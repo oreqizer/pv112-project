@@ -4,6 +4,10 @@
 
 #include "food.hpp"
 
+std::vector<Mesh> Food::render() {
+    // TODO
+}
+
 void Food::generate(const std::vector<glm::vec3> &blocked) {
     std::vector<glm::vec3> options;
     for (int i = 0; i < SIZE; i++) {

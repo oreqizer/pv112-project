@@ -9,6 +9,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
   this->width = initial_width;
   this->height = initial_height;
 
+  game = new Game();
+
   // --------------------------------------------------------------------------
   // Initialize UBO Data
   // --------------------------------------------------------------------------
@@ -77,6 +79,8 @@ Application::~Application() {
 }
 
 void Application::render() {
+  game->update();
+
   // --------------------------------------------------------------------------
   // UPDATE UBOS
   // --------------------------------------------------------------------------

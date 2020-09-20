@@ -13,6 +13,8 @@
 #include "camera.hpp"
 #include "texture.hpp"
 
+#include "src/game.hpp"
+
 // ----------------------------------------------------------------------------
 // UNIFORM STRUCTS
 // ----------------------------------------------------------------------------
@@ -56,6 +58,8 @@ public:
 private:
   size_t width;
   size_t height;
+
+  Game *game;
 
   Camera camera;
 

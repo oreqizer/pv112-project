@@ -17,35 +17,35 @@ std::vector<Mesh> Snake::render() {
 
 void Snake::update() {
     timeMove += Time::timeDelta;
-    if (segments.size() <= Speed::Slow && timeMove.count() > SpeedMs::Slow) {
+    if (segments.size() <= settings::Speed::Slow && timeMove.count() > settings::SpeedMs::Slow) {
         move();
     }
-    if (segments.size() <= Speed::Medium && timeMove.count() > SpeedMs::Medium) {
+    if (segments.size() <= settings::Speed::Medium && timeMove.count() > settings::SpeedMs::Medium) {
         move();
     }
-    if (timeMove.count() > SpeedMs::Fast) {
+    if (timeMove.count() > settings::SpeedMs::Fast) {
         move();
     }
 }
 
-void Snake::turn(Arrow arrow) {
+void Snake::turn(settings::Arrow arrow) {
     switch (arrow) {
-    case Arrow::Top:
+    case settings::Arrow::Top:
         direction = dir::top;
         break;
-    case Arrow::Bottom:
+    case settings::Arrow::Bottom:
         direction = dir::bottom;
         break;
-    case Arrow::Right:
+    case settings::Arrow::Right:
         direction = dir::right;
         break;
-    case Arrow::Left:
+    case settings::Arrow::Left:
         direction = dir::left;
         break;
-    case Arrow::Forward:
+    case settings::Arrow::Forward:
         direction = dir::forward;
         break;
-    case Arrow::Back:
+    case settings::Arrow::Back:
         direction = dir::back;
         break;
     }
