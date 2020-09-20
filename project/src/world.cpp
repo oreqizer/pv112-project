@@ -39,6 +39,6 @@ World::World() {
     }
 }
 
-std::vector<Mesh> World::render() {
-    // TODO
+std::vector<glm::vec3> World::render() {
+    return wall;
 }

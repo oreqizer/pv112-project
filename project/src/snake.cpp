@@ -11,8 +11,8 @@ Snake::Snake(Food& food) : food(food), segments(std::vector<glm::vec3>()), timeM
     food.generate(segments);
 };
 
-std::vector<Mesh> Snake::render() {
-    // TODO
+std::vector<glm::vec3> Snake::render() {
+    return segments;
 }
 
 void Snake::update() {

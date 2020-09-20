@@ -26,18 +26,18 @@ struct CameraUBO {
 
 struct LightUBO {
   glm::vec4 position;
-  glm::vec4 ambient_color;
-  glm::vec4 diffuse_color;
-  glm::vec4 specular_color;
+  glm::vec4 ambient;
+  glm::vec4 diffuse;
+  glm::vec4 specular;
 };
 
 struct ObjectUBO {
-  glm::mat4 model_matrix;  // [  0 -  64) bytes
-  glm::vec4 ambient_color; // [ 64 -  80) bytes
-  glm::vec4 diffuse_color; // [ 80 -  96) bytes
+  glm::mat4 model;         // [  0 -  64) bytes
+  glm::vec4 colorAmbient;  // [ 64 -  80) bytes
+  glm::vec4 colorDiffuse;  // [ 80 -  96) bytes
 
   // Contains shininess in .w element
-  glm::vec4 specular_color; // [ 96 - 112) bytes
+  glm::vec4 colorSpecular; // [ 96 - 112) bytes
 };
 
 // ----------------------------------------------------------------------------
@@ -64,29 +64,23 @@ private:
   Camera camera;
 
   // Programs
-  GLuint main_program = create_program("build/08_ubo/shaders/main.vert", "build/08_ubo/shaders/main.frag");
-  GLuint draw_light_program = create_program("build/08_ubo/shaders/draw_light.vert", "build/08_ubo/shaders/draw_light.frag");
+  GLuint programCore = create_program("build/project/shaders/core.vert", "build/project/shaders/core.frag");
 
   // Objects
   Mesh cube = Mesh::cube();
-  Mesh sphere = Mesh::sphere();
-  Mesh teapot = Mesh::teapot();
 
   // UBOs
-  GLuint camera_buffer = 0;
-  CameraUBO camera_ubo;
+  GLuint bufferCamera = 0;
+  CameraUBO uboCamera;
 
-  GLuint light_buffer = 0;
-  LightUBO light_ubo;
+  GLuint bufferLight = 0;
+  LightUBO uboLight;
 
-  GLuint object_buffer = 0;
-  ObjectUBO object_ubo;
+  // Snake / food
+  std::vector<ObjectUBO> snake;
+  GLuint bufferSnake = 0;
 
-  // Many Lights
-  std::vector<LightUBO> lights;
-  GLuint lights_buffer = 0;
-
-  // Instancing/MultiDraw
-  std::vector<ObjectUBO> instanced_objects;
-  GLuint instanced_objects_buffer = 0;
+  // Walls
+  std::vector<ObjectUBO> walls;
+  GLuint bufferWalls = 0;
 };

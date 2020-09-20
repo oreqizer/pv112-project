@@ -2,14 +2,12 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
-#include "mesh.hpp"
-
 class Food {
 public:
     Food();
     ~Food() = default;
 
-    std::vector<Mesh> render();
+    glm::vec3 render();
     void generate(const std::vector<glm::vec3> &options);
 
     glm::vec3 position;

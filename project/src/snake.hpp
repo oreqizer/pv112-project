@@ -24,7 +24,7 @@ public:
     Snake(Food &food);
     ~Snake() = default;
 
-    std::vector<Mesh> render();
+    std::vector<glm::vec3> render();
     void update();
     void turn(settings::Arrow arrow);
     void move();

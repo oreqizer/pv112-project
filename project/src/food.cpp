@@ -4,8 +4,8 @@
 
 #include "food.hpp"
 
-std::vector<Mesh> Food::render() {
-    // TODO
+glm::vec3 Food::render() {
+    return position;
 }
 
 void Food::generate(const std::vector<glm::vec3> &blocked) {

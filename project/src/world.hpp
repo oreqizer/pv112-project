@@ -11,7 +11,7 @@ public:
 World();
 ~World() = default;
 
-std::vector<Mesh> render();
+std::vector<glm::vec3> render();
 
 private:
     std::vector<glm::vec3> wall;
