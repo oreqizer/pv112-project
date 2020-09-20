@@ -46,7 +46,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glNamedBufferStorage(bufferLight, sizeof(LightUBO), &uboLight, GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferSnake);
-  glNamedBufferStorage(bufferSnake, snake.size * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(bufferSnake, snake.size() * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferWalls);
   glNamedBufferStorage(bufferWalls, walls.size() * sizeof(ObjectUBO), walls.data(), GL_DYNAMIC_STORAGE_BIT);
