@@ -69,7 +69,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glNamedBufferStorage(lights_buffer, lights.size() * sizeof(LightUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
   // - Task 8.4 create buffer for instanced objects
   glCreateBuffers(1, &instanced_objects_buffer);
-  glNamedBufferStorage(instanced_objects_buffer, instanced_objects.size() * sizeof(ObjectUBO), instanced_objects.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(instanced_objects_buffer, instanced_objects.size() * sizeof(ObjectUBO), instanced_objects.data(),
+                       GL_DYNAMIC_STORAGE_BIT);
 }
 
 Application::~Application() {
@@ -80,6 +81,19 @@ Application::~Application() {
 
 void Application::render() {
   game->update();
+
+  // =====
+  // TODOs
+  // =====
+  //
+  // 1. make buffer for walls, 6 * SIZE * SIZE
+  // 2. make buffer for food, 1
+  // 3. make buffer for snake himself, SIZE * SIZE * SIZE
+  // 4. fragment shader for walls
+  // 5. fragment shader for food
+  // 6. fragment shader for snake
+  // 7. vertex shader for cube (???)
+  // 8. correct camera alignment
 
   // --------------------------------------------------------------------------
   // UPDATE UBOS
@@ -124,7 +138,8 @@ void Application::render() {
   glBindBufferBase(GL_UNIFORM_BUFFER, 0, camera_buffer);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lights_buffer);
   glBindVertexArray(cube.get_vao());
-  glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr, static_cast<GLsizei>(lights.size()));
+  glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
+                          static_cast<GLsizei>(lights.size()));
 
   // TODO Task 8.4: Draw instanced objects
   glUseProgram(main_program);
@@ -132,7 +147,8 @@ void Application::render() {
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, lights_buffer);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, instanced_objects_buffer);
   glBindVertexArray(teapot.get_vao());
-  glDrawElementsInstanced(teapot.get_mode(), static_cast<GLsizei>(teapot.get_indices_count()), GL_UNSIGNED_INT, nullptr, static_cast<GLsizei>(instanced_objects.size()));
+  glDrawElementsInstanced(teapot.get_mode(), static_cast<GLsizei>(teapot.get_indices_count()), GL_UNSIGNED_INT, nullptr,
+                          static_cast<GLsizei>(instanced_objects.size()));
 }
 
 void Application::on_resize(GLFWwindow *window, int width, int height) {
@@ -141,4 +157,27 @@ void Application::on_resize(GLFWwindow *window, int width, int height) {
 }
 void Application::on_mouse_move(GLFWwindow *window, double x, double y) { camera.on_mouse_move(x, y); }
 void Application::on_mouse_pressed(GLFWwindow *window, int button, int action, int mods) { camera.on_mouse_button(button, action, mods); }
-void Application::on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods) {}
+void Application::on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
+  if (action == GLFW_PRESS) {
+    switch (key) {
+    case GLFW_KEY_W:
+      game->snake->turn(settings::Arrow::Top);
+      break;
+    case GLFW_KEY_A:
+      game->snake->turn(settings::Arrow::Back);
+      break;
+    case GLFW_KEY_S:
+      game->snake->turn(settings::Arrow::Bottom);
+      break;
+    case GLFW_KEY_D:
+      game->snake->turn(settings::Arrow::Right);
+      break;
+    case GLFW_KEY_Q:
+      game->snake->turn(settings::Arrow::Left);
+      break;
+    case GLFW_KEY_E:
+      game->snake->turn(settings::Arrow::Forward);
+      break;
+    }
+  }
+}

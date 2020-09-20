@@ -1,4 +1,4 @@
-#define SIZE 32
+#define SIZE 24
 #define FRAMERATE 165
 #define WIDTH 1280
 #define HEIGHT 720

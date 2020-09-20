@@ -65,6 +65,8 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "__functional_03": "cpp",
+        "filesystem": "cpp"
     }
 }
