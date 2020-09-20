@@ -14,10 +14,13 @@ Application::Application(size_t initial_width, size_t initial_height) {
   // --------------------------------------------------------------------------
   // Initialize UBO Data
   // --------------------------------------------------------------------------
+
+  // TODO
   uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
   uboCamera.projection = glm::perspective(glm::radians(45.0f), float(width) / float(height), 0.01f, 1000.0f);
   uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+  // TODO
   uboLight.position = glm::vec4(0.0f, 3.0f, 2.0f, 1.0f);
   uboLight.ambient = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
   uboLight.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -79,6 +82,8 @@ void Application::render() {
   // --------------------------------------------------------------------------
 
   // Camera
+
+  // TODO
   uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
   uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);

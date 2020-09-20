@@ -6,6 +6,7 @@ layout(binding = 0, std140) uniform Camera {
 	vec3 position;
 } camera;
 
+// TODO bind this
 struct Light {
 	vec4 position;
 	vec4 ambient_color;
@@ -13,6 +14,7 @@ struct Light {
 	vec4 specular_color;
 };
 
+// TODO remove this
 layout(binding = 1, std430) buffer Lights {
 	Light lights[];
 };
@@ -24,6 +26,7 @@ struct Object {
 	vec4 specular_color;
 };
 
+// TODO make separaet for walls and snake/food
 layout(binding = 2, std430) buffer Objects {
 	Object objects[];
 };
