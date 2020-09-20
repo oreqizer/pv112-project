@@ -84,7 +84,7 @@ void Application::render() {
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
 
   // Snake
-  snake.resize(0); // reset
+  snake.clear();
 
   auto foodPosition = game->food->render();
   auto snakePositions = game->snake->render();
