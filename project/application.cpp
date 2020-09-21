@@ -61,9 +61,9 @@ void Application::fillWalls() {
   for (auto pos : wallPositions) {
     auto translate = glm::translate(glm::mat4(1.0), pos);
     auto distance = glm::distance(glm::vec3(0.0), pos);
-    auto r = sin(distance + time);
-    auto g = sin(distance + time + 3.14);
-    auto b = sin(distance + time + 3.14 / 2);
+    auto r = sin(distance / SIZE + time);
+    auto g = sin(distance / SIZE + time + 3.14);
+    auto b = sin(distance / SIZE + time + 3.14 / 2);
 
     walls.push_back({
         translate,
