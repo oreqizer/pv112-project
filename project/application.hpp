@@ -49,6 +49,9 @@ public:
   ~Application();
 
   void render();
+  
+  void fillWalls();
+  void fillSnake();
 
   void on_resize(GLFWwindow *window, int width, int height);
   void on_mouse_move(GLFWwindow *window, double x, double y);

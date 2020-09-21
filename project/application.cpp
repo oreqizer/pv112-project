@@ -26,17 +26,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   uboLight.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
   uboLight.specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-  auto wallPositions = game->world->render();
-  for (auto pos : wallPositions) {
-    auto translate = glm::translate(glm::mat4(1.0), pos);
-
-    walls.push_back({
-        translate,       // position
-        glm::vec4(0.0f), // ambient
-        glm::vec4(1.0f), // diffuse
-        glm::vec4(0.0f), // specular
-    });
-  }
+  fillWalls();
 
   // --------------------------------------------------------------------------
   // CREATE BUFFERS
@@ -61,6 +51,58 @@ Application::~Application() {
   glDeleteBuffers(1, &bufferCamera);
 }
 
+void Application::fillWalls() {
+  walls.clear();
+
+  auto wallPositions = game->world->render();
+
+  auto time = glfwGetTime();
+
+  for (auto pos : wallPositions) {
+    auto translate = glm::translate(glm::mat4(1.0), pos);
+    auto distance = glm::distance(glm::vec3(0.0), pos);
+    auto r = sin(distance + time);
+    auto g = sin(distance + time + 3.14);
+    auto b = sin(distance + time + 3.14 / 2);
+
+    walls.push_back({
+        translate,
+        glm::vec4(r, g, b, 0.1), // ambient
+        glm::vec4(0.0),          // diffuse
+        glm::vec4(0.0),          // specular
+    });
+  }
+}
+
+void Application::fillSnake() {
+  snake.clear();
+
+  auto foodPosition = game->food->render();
+  auto snakePositions = game->snake->render();
+
+  auto ambient = glm::vec4(0.0);
+  auto diffuse = glm::vec4(1.0, 1.0, 1.0, 0.5);
+  auto specular = glm::vec4(0.0);
+
+  snake.push_back({
+      glm::translate(glm::mat4(1.0), foodPosition),
+      ambient,
+      diffuse,
+      specular,
+  });
+
+  for (auto pos : snakePositions) {
+    auto translate = glm::translate(glm::mat4(1.0), pos);
+
+    snake.push_back({
+        translate,
+        ambient,
+        diffuse,
+        specular,
+    });
+  }
+}
+
 void Application::render() {
   game->update();
 
@@ -68,14 +110,8 @@ void Application::render() {
   // TODOs
   // =====
   //
-  // 1. make buffer for walls, 6 * SIZE * SIZE
-  // 2. make buffer for food, 1
-  // 3. make buffer for snake himself, SIZE * SIZE * SIZE
-  // 4. fragment shader for walls
-  // 5. fragment shader for food
-  // 6. fragment shader for snake
-  // 7. vertex shader for cube (???)
-  // 8. correct camera alignment
+  // 1. fragment shader pimp
+  // 2. correct camera alignment
 
   // --------------------------------------------------------------------------
   // UPDATE UBOS
@@ -89,28 +125,7 @@ void Application::render() {
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
 
   // Snake
-  snake.clear();
-
-  auto foodPosition = game->food->render();
-  auto snakePositions = game->snake->render();
-
-  snake.push_back({
-      glm::translate(glm::mat4(1.0), foodPosition),
-      glm::vec4(0.0f), // ambient
-      glm::vec4(1.0f), // diffuse
-      glm::vec4(0.0f), // specular
-  });
-
-  for (auto pos : snakePositions) {
-    auto translate = glm::translate(glm::mat4(1.0), pos);
-
-    snake.push_back({
-        translate,       // position
-        glm::vec4(0.0f), // ambient
-        glm::vec4(1.0f), // diffuse
-        glm::vec4(0.0f), // specular
-    });
-  }
+  fillSnake();
 
   glNamedBufferSubData(bufferSnake, 0, snake.size() * sizeof(ObjectUBO), snake.data());
 
@@ -129,11 +144,12 @@ void Application::render() {
 
   // Snake and food
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferSnake);
+  glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
                           static_cast<GLsizei>(snake.size()));
 
   // Walls
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, bufferWalls);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferWalls);
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
                           static_cast<GLsizei>(walls.size()));
