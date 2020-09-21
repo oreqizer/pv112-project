@@ -122,12 +122,18 @@ void Application::render() {
   // TODO
   uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
   uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
 
   // Snake
   fillSnake();
 
   glNamedBufferSubData(bufferSnake, 0, snake.size() * sizeof(ObjectUBO), snake.data());
+
+  // Walls
+  fillWalls();
+
+  glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
 
   // --------------------------------------------------------------------------
   // DRAW THE SCENE
