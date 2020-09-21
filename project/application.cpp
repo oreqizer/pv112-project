@@ -63,6 +63,7 @@ void Application::render() {
   // 1. fragment shader pimp
   // 2. correct camera alignment
   // 3. https://learnopengl.com/In-Practice/2D-Game/Audio
+  // 4. GUI
 
   // --------------------------------------------------------------------------
   // UPDATE UBOS
