@@ -48,6 +48,7 @@ public:
   Application(size_t initial_width, size_t initial_height);
   ~Application();
 
+  void update();
   void render();
   
   void fillWalls();

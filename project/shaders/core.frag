@@ -51,5 +51,5 @@ void main()
 
     color_sum = color_sum / (color_sum + 1.0);   // tone mapping
     color_sum = pow(color_sum, vec3(1.0 / 2.2)); // gamma correction
-	final_color = vec4(color_sum, 1.0);
+	final_color = vec4(color_sum, 1.0); // TODO alpha is here, not in code
 }

@@ -51,6 +51,67 @@ Application::~Application() {
   glDeleteBuffers(1, &bufferCamera);
 }
 
+void Application::update() {
+  game->update();
+}
+
+void Application::render() {
+  // =====
+  // TODOs
+  // =====
+  //
+  // 1. fragment shader pimp
+  // 2. correct camera alignment
+  // 3. https://learnopengl.com/In-Practice/2D-Game/Audio
+
+  // --------------------------------------------------------------------------
+  // UPDATE UBOS
+  // --------------------------------------------------------------------------
+
+  // Camera
+
+  // TODO
+  uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
+  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+  glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
+
+  // Snake
+  fillSnake();
+
+  glNamedBufferSubData(bufferSnake, 0, snake.size() * sizeof(ObjectUBO), snake.data());
+
+  // Walls
+  fillWalls();
+
+  glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
+
+  // --------------------------------------------------------------------------
+  // DRAW THE SCENE
+  // --------------------------------------------------------------------------
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glViewport(0, 0, this->width, this->height);
+  glEnable(GL_DEPTH_TEST);
+
+  glUseProgram(programCore);
+
+  glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferCamera);
+  glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferLight);
+
+  // Snake and food
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferSnake);
+  glBindVertexArray(cube.get_vao());
+  glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
+                          static_cast<GLsizei>(snake.size()));
+
+  // Walls
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferWalls);
+  glBindVertexArray(cube.get_vao());
+  glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
+                          static_cast<GLsizei>(walls.size()));
+}
+
 void Application::fillWalls() {
   walls.clear();
 
@@ -101,64 +162,6 @@ void Application::fillSnake() {
         specular,
     });
   }
-}
-
-void Application::render() {
-  game->update();
-
-  // =====
-  // TODOs
-  // =====
-  //
-  // 1. fragment shader pimp
-  // 2. correct camera alignment
-
-  // --------------------------------------------------------------------------
-  // UPDATE UBOS
-  // --------------------------------------------------------------------------
-
-  // Camera
-
-  // TODO
-  uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
-  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-  glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
-
-  // Snake
-  fillSnake();
-
-  glNamedBufferSubData(bufferSnake, 0, snake.size() * sizeof(ObjectUBO), snake.data());
-
-  // Walls
-  fillWalls();
-
-  glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
-
-  // --------------------------------------------------------------------------
-  // DRAW THE SCENE
-  // --------------------------------------------------------------------------
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  glViewport(0, 0, this->width, this->height);
-  glEnable(GL_DEPTH_TEST);
-
-  glUseProgram(programCore);
-
-  glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferCamera);
-  glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferLight);
-
-  // Snake and food
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferSnake);
-  glBindVertexArray(cube.get_vao());
-  glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
-                          static_cast<GLsizei>(snake.size()));
-
-  // Walls
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferWalls);
-  glBindVertexArray(cube.get_vao());
-  glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
-                          static_cast<GLsizei>(walls.size()));
 }
 
 void Application::on_resize(GLFWwindow *window, int width, int height) {

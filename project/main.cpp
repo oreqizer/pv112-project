@@ -65,6 +65,9 @@ int main(void) {
 
     // Loop
     while (!glfwWindowShouldClose(window)) {
+      // Update
+      application.update();
+
       // Render
       application.render();
 
