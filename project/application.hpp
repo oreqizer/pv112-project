@@ -77,8 +77,9 @@ private:
   GLuint bufferCamera = 0;
   CameraUBO uboCamera;
 
-  GLuint bufferLight = 0;
-  LightUBO uboLight;
+  // Lights
+  std::vector<LightUBO> lights;
+  GLuint bufferLights = 0;
 
   // Snake / food
   std::vector<ObjectUBO> snake;

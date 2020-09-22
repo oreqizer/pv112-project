@@ -6,13 +6,6 @@ layout(binding = 0, std140) uniform Camera {
 	vec3 position;
 } camera;
 
-layout(binding = 1, std140) uniform Light {
-	vec4 position;
-	vec4 ambient_color;
-	vec4 diffuse_color;
-	vec4 specular_color;
-} light;
-
 struct Object {
 	mat4 model_matrix;
 	vec4 ambient_color;

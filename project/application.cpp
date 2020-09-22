@@ -15,17 +15,34 @@ Application::Application(size_t initial_width, size_t initial_height) {
   // Initialize UBO Data
   // --------------------------------------------------------------------------
 
+  // Camera
+
   // TODO
   uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
   uboCamera.projection = glm::perspective(glm::radians(45.0f), float(width) / float(height), 0.01f, 1000.0f);
-  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2), glm::vec3(0.0f, 1.0f, 0.0f));
 
-  // TODO
-  uboLight.position = glm::vec4(0.0f, 3.0f, 2.0f, 1.0f);
-  uboLight.ambient = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
-  uboLight.diffuse = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-  uboLight.specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+  // Lights
+  std::vector<glm::vec4> edges = {
+    glm::vec4(0.0, 0.0, 0.0, 1.0),
+    glm::vec4(SIZE, 0.0, 0.0, 1.0),
+    glm::vec4(SIZE, SIZE, 0.0, 1.0),
+    glm::vec4(SIZE, 0.0, SIZE, 1.0),
+    glm::vec4(SIZE, SIZE, SIZE, 1.0),
+    glm::vec4(0.0, SIZE, 0.0, 1.0),
+    glm::vec4(0.0, SIZE, SIZE, 1.0),
+    glm::vec4(0.0, 0.0, SIZE, 1.0),
+  };
+  for (auto edge : edges) {
+    lights.push_back({
+      edge,
+      glm::vec4(0.0), // ambient
+      glm::vec4(1.0), // diffuse
+      glm::vec4(0.0), // specular
+    });
+  }
 
+  // Initial walls
   fillWalls();
 
   // --------------------------------------------------------------------------
@@ -35,8 +52,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glCreateBuffers(1, &bufferCamera);
   glNamedBufferStorage(bufferCamera, sizeof(CameraUBO), &uboCamera, GL_DYNAMIC_STORAGE_BIT);
 
-  glCreateBuffers(1, &bufferLight);
-  glNamedBufferStorage(bufferLight, sizeof(LightUBO), &uboLight, GL_DYNAMIC_STORAGE_BIT);
+  glCreateBuffers(1, &bufferLights);
+  glNamedBufferStorage(bufferLights, lights.size() * sizeof(ObjectUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferSnake);
   glNamedBufferStorage(bufferSnake, snake.size() * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
@@ -60,7 +77,6 @@ void Application::render() {
   // TODOs
   // =====
   //
-  // 1. fragment shader pimp
   // 2. correct camera alignment
   // 3. https://learnopengl.com/In-Practice/2D-Game/Audio
   // 4. GUI
@@ -73,7 +89,7 @@ void Application::render() {
 
   // TODO
   uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
-  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2), glm::vec3(0.0f, 1.0f, 0.0f));
 
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
 
@@ -98,15 +114,19 @@ void Application::render() {
   glUseProgram(programCore);
 
   glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferCamera);
-  glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferLight);
+  glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferLights);
+
+  auto alphaUniform = glGetUniformLocation(programCore, "alpha");
 
   // Snake and food
+  glUniform1f(alphaUniform, 0.75);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferSnake);
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
                           static_cast<GLsizei>(snake.size()));
 
   // Walls
+  glUniform1f(alphaUniform, 0.1);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferWalls);
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
@@ -123,9 +143,9 @@ void Application::fillWalls() {
   for (auto pos : wallPositions) {
     auto translate = glm::translate(glm::mat4(1.0), pos);
     auto distance = glm::distance(glm::vec3(0.0), pos);
-    auto r = sin(distance / SIZE + time) / 2 + 0.5;
-    auto g = sin(distance / SIZE + time + 3.14) / 2 + 0.5;
-    auto b = sin(distance / SIZE + time + 3.14 / 2) / 2 + 0.5;
+    auto r = sin(distance / (SIZE * 2) + time) / 2 + 0.5;
+    auto g = sin(distance / (SIZE * 2) + time + 3.14) / 2 + 0.5;
+    auto b = sin(distance / (SIZE * 2) + time + 3.14 / 2) / 2 + 0.5;
 
     walls.push_back({
         translate,
