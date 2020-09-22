@@ -66,6 +66,9 @@ Application::~Application() {
   glDeleteProgram(programCore);
 
   glDeleteBuffers(1, &bufferCamera);
+  glDeleteBuffers(1, &bufferLights);
+  glDeleteBuffers(1, &bufferSnake);
+  glDeleteBuffers(1, &bufferWalls);
 }
 
 void Application::update() {
