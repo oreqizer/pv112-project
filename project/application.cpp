@@ -16,11 +16,12 @@ Application::Application(size_t initial_width, size_t initial_height) {
   // --------------------------------------------------------------------------
 
   // Camera
+  camera.setDistance(SIZE);
+  camera.setEyeOffset(Game::center);
 
-  // TODO
-  uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
+  uboCamera.position = glm::vec4(camera.getEyePosition(), 1.0f);
+  uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center, glm::vec3(0.0f, 1.0f, 0.0f));
   uboCamera.projection = glm::perspective(glm::radians(45.0f), float(width) / float(height), 0.01f, 1000.0f);
-  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2), glm::vec3(0.0f, 1.0f, 0.0f));
 
   // Lights
   std::vector<glm::vec4> edges = {
@@ -80,7 +81,6 @@ void Application::render() {
   // TODOs
   // =====
   //
-  // 2. correct camera alignment
   // 3. https://learnopengl.com/In-Practice/2D-Game/Audio
   // 4. GUI
 
@@ -89,10 +89,8 @@ void Application::render() {
   // --------------------------------------------------------------------------
 
   // Camera
-
-  // TODO
-  uboCamera.position = glm::vec4(camera.get_eye_position(), 1.0f);
-  uboCamera.view = glm::lookAt(camera.get_eye_position(), glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2), glm::vec3(0.0f, 1.0f, 0.0f));
+  uboCamera.position = glm::vec4(camera.getEyePosition(), 1.0f);
+  uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center, glm::vec3(0.0f, 1.0f, 0.0f));
 
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
 
@@ -188,13 +186,14 @@ void Application::fillSnake() {
   }
 }
 
-void Application::on_resize(GLFWwindow *window, int width, int height) {
+void Application::onResize(GLFWwindow *window, int width, int height) {
   this->width = width;
   this->height = height;
 }
-void Application::on_mouse_move(GLFWwindow *window, double x, double y) { camera.on_mouse_move(x, y); }
-void Application::on_mouse_pressed(GLFWwindow *window, int button, int action, int mods) { camera.on_mouse_button(button, action, mods); }
-void Application::on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
+
+void Application::onMouseMove(GLFWwindow *window, double x, double y) { camera.onMouseMove(x, y); }
+
+void Application::onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
   if (action == GLFW_PRESS) {
     switch (key) {
     case GLFW_KEY_W:

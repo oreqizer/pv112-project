@@ -9,55 +9,52 @@
 /// Use left mouse button to change the point of view.
 /// Use right mouse button to zoom in and zoom out.
 class Camera {
+public:
+  Camera();
+  ~Camera() = default;
+
+  /// Call when the user moves with the mouse cursor (see glfwSetCursorPosCallback)
+  void onMouseMove(double x, double y);
+
+  /// Sets distance
+  void setDistance(float value);
+  /// Sets eye offset
+  void setEyeOffset(glm::vec3 value);
+  /// Returns the position of the eye in world space coordinates
+  glm::vec3 getEyePosition() const;
+
 private:
   /// Constants that defines the behaviour of the camera
   ///		- Minimum elevation in radians
-  static const float min_elevation;
+  static const float elevationMin;
   ///		- Maximum elevation in radians
-  static const float max_elevation;
-  ///		- Minimum distance from the point of interest
-  static const float min_distance;
+  static const float elevationMax;
   ///		- Sensitivity of the mouse when changing elevation or direction angles
-  static const float angle_sensitivity;
-  ///		- Sensitivity of the mouse when changing zoom
-  static const float zoom_sensitivity;
+  static const float angleSensitivity;
 
-  /// angle_direction is an angle in which determines into which direction in xz plane I look.
+  /// angleDirection is an angle in which determines into which direction in xz plane I look.
   ///		- 0 degrees .. I look in -z direction
   ///		- 90 degrees .. I look in -x direction
   ///		- 180 degrees .. I look in +z direction
   ///		- 270 degrees .. I look in +x direction
-  float angle_direction;
+  float angleDirection;
 
-  /// angle_direction is an angle in which determines from which "height" I look.
+  /// angleDirection is an angle in which determines from which "height" I look.
   ///		- positive elevation .. I look from above the xz plane
   ///		- negative elevation .. I look from below the xz plane
-  float angle_elevation;
+  float angleElevation;
 
   /// Distance from (0,0,0), the point at which I look
   float distance;
 
   /// Final position of the eye in world space coordinates, for LookAt or shaders
-  glm::vec3 eye_position;
+  glm::vec3 eyePosition;
+  /// Eye offset for correctly calculating angles around a point
+  glm::vec3 eyeOffset;
 
   /// Last X and Y coordinates of the mouse cursor
-  int last_x, last_y;
+  int xLast, yLast;
 
-  /// True or false if moused buttons are pressed and the user rotates/zooms the camera
-  bool is_rotating, is_zooming;
-
-  /// Recomputes 'eye_position' from 'angle_direction', 'angle_elevation', and 'distance'
-  void update_eye_pos();
-
-public:
-  Camera();
-
-  /// Call when the user presses or releases a mouse button (see glfwSetMouseButtonCallback)
-  void on_mouse_button(int button, int action, int mods);
-
-  /// Call when the user moves with the mouse cursor (see glfwSetCursorPosCallback)
-  void on_mouse_move(double x, double y);
-
-  /// Returns the position of the eye in world space coordinates
-  glm::vec3 get_eye_position() const;
+  /// Recomputes 'eyePosition' from 'angleDirection', 'angleElevation'
+  void updateEyePosition();
 };

@@ -54,10 +54,10 @@ public:
   void fillWalls();
   void fillSnake();
 
-  void on_resize(GLFWwindow *window, int width, int height);
-  void on_mouse_move(GLFWwindow *window, double x, double y);
+  void onResize(GLFWwindow *window, int width, int height);
+  void onMouseMove(GLFWwindow *window, double x, double y);
   void on_mouse_pressed(GLFWwindow *window, int button, int action, int mods);
-  void on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods);
+  void onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 private:
   size_t width;

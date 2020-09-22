@@ -91,12 +91,12 @@ int main(void) {
 
 void on_resize(GLFWwindow *window, int width, int height) {
   Application *application = (Application *)glfwGetWindowUserPointer(window);
-  application->on_resize(window, width, height);
+  application->onResize(window, width, height);
 }
 
 void on_mouse_move(GLFWwindow *window, double x, double y) {
   Application *application = (Application *)glfwGetWindowUserPointer(window);
-  application->on_mouse_move(window, x, y);
+  application->onMouseMove(window, x, y);
 }
 
 void on_mouse_pressed(GLFWwindow *window, int button, int action, int mods) {
@@ -106,7 +106,7 @@ void on_mouse_pressed(GLFWwindow *window, int button, int action, int mods) {
 
 void on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
   Application *application = (Application *)glfwGetWindowUserPointer(window);
-  application->on_key_pressed(window, key, scancode, action, mods);
+  application->onKeyPressed(window, key, scancode, action, mods);
 }
 
 void APIENTRY opengl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const char *message,
