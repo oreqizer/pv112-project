@@ -138,7 +138,6 @@ void Application::fillWalls() {
     auto translate = glm::translate(glm::mat4(1.0), pos + offset);
 
     // Fancy colors
-    auto distance = glm::distance(glm::vec3(0.0), pos);
     auto r = sin(distance / (SIZE * 2) + time) / 2 + 0.5;
     auto g = sin(distance / (SIZE * 2) + time + 3.14) / 2 + 0.5;
     auto b = sin(distance / (SIZE * 2) + time + 3.14 / 2) / 2 + 0.5;
