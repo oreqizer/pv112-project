@@ -2,9 +2,6 @@
 
 #include "application.hpp"
 
-float random() { return rand() / (RAND_MAX + 1.); }
-float random_neg() { return (rand() / (RAND_MAX + 1.) * 2.0) - 1.0; }
-
 Application::Application(size_t initial_width, size_t initial_height) {
   this->width = initial_width;
   this->height = initial_height;
@@ -134,7 +131,12 @@ void Application::fillWalls() {
   auto time = glfwGetTime();
 
   for (auto pos : wallPositions) {
-    auto translate = glm::translate(glm::mat4(1.0), pos);
+    // Oscillating blocks
+    auto center = glm::vec3(SIZE / 2);
+    auto offset = glm::normalize(pos - center) * static_cast<float>(sin(time) + 1) * 0.1f;
+    auto translate = glm::translate(glm::mat4(1.0), pos + offset);
+
+    // Fancy colors
     auto distance = glm::distance(glm::vec3(0.0), pos);
     auto r = sin(distance / (SIZE * 2) + time) / 2 + 0.5;
     auto g = sin(distance / (SIZE * 2) + time + 3.14) / 2 + 0.5;

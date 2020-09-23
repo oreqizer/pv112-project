@@ -5,12 +5,12 @@
 
 #include "snake.hpp"
 
-static const glm::vec3 Snake::top = glm::vec3(0, 1, 0);
-static const glm::vec3 Snake::bottom = glm::vec3(0, -1, 0);
-static const glm::vec3 Snake::right = glm::vec3(1, 0, 0);
-static const glm::vec3 Snake::left = glm::vec3(-1, 0, 0);
-static const glm::vec3 Snake::forward = glm::vec3(0, 0, 1);
-static const glm::vec3 Snake::back = glm::vec3(0, 0, -1);
+const glm::vec3 Snake::top = glm::vec3(0, 1, 0);
+const glm::vec3 Snake::bottom = glm::vec3(0, -1, 0);
+const glm::vec3 Snake::right = glm::vec3(1, 0, 0);
+const glm::vec3 Snake::left = glm::vec3(-1, 0, 0);
+const glm::vec3 Snake::forward = glm::vec3(0, 0, 1);
+const glm::vec3 Snake::back = glm::vec3(0, 0, -1);
 
 Snake::Snake(Food &food) : food(food), segments(std::vector<glm::vec3>()), timeMove(std::chrono::milliseconds(0)) {
   segments.push_back(glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2));
@@ -22,13 +22,13 @@ std::vector<glm::vec3> Snake::render() { return segments; }
 
 void Snake::update() {
   timeMove += Time::timeDelta;
-  if (segments.size() <= Speed::Slow && timeMove.count() > SpeedMs::Slow) {
+  if (segments.size() <= static_cast<int>(Speed::Slow) && timeMove.count() > static_cast<int>(SpeedMs::Slow)) {
     move();
   }
-  if (segments.size() <= Speed::Medium && timeMove.count() > SpeedMs::Medium) {
+  if (segments.size() <= static_cast<int>(Speed::Medium) && timeMove.count() > static_cast<int>(SpeedMs::Medium)) {
     move();
   }
-  if (timeMove.count() > SpeedMs::Fast) {
+  if (timeMove.count() > static_cast<int>(SpeedMs::Fast)) {
     move();
   }
 }

@@ -1,3 +1,6 @@
+#ifndef TIME_H
+#define TIME_H
+
 #include <chrono>
 
 #include <glad/glad.h>
@@ -13,3 +16,5 @@ public:
   static std::chrono::milliseconds timeDelta;
   static std::chrono::milliseconds timeTotal;
 };
+
+#endif

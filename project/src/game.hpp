@@ -1,3 +1,6 @@
+#ifndef GAME_H
+#define GAME_H
+
 #include <glm/glm.hpp>
 
 #include "food.hpp"
@@ -6,7 +9,7 @@
 
 class Game {
 public:
-  static const glm::vec3 center
+  static const glm::vec3 center;
 
   Game();
   ~Game() = default;
@@ -17,3 +20,5 @@ public:
   Snake *snake;
   World *world;
 };
+
+#endif

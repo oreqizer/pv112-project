@@ -1,3 +1,6 @@
+#ifndef SETTINGS_H
+#define SETTINGS_H
+
 #define SIZE 24
 #define FRAMERATE 165
 #define WIDTH 1280
@@ -28,3 +31,5 @@ enum class SpeedMs {
   Medium = 250,
   Fast = 125,
 };
+
+#endif

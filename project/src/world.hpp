@@ -1,3 +1,6 @@
+#ifndef WORLD_H
+#define WORLD_H
+
 #include <vector>
 
 #include <glad/glad.h>
@@ -16,3 +19,5 @@ public:
 private:
   std::vector<glm::vec3> wall;
 };
+
+#endif

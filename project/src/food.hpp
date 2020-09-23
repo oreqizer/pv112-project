@@ -1,3 +1,8 @@
+#ifndef FOOD_H
+#define FOOD_H
+
+#include <vector>
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -12,3 +17,5 @@ public:
 
   glm::vec3 position;
 };
+
+#endif

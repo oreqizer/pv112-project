@@ -1,3 +1,6 @@
+#ifndef SNAKE_H
+#define SNAKE_H
+
 #include <vector>
 #include <chrono>
 
@@ -33,5 +36,7 @@ private:
   Food &food;
   std::vector<glm::vec3> segments;
   std::chrono::milliseconds timeMove;
-  glm::vec3 direction = dir::forward;
+  glm::vec3 direction = Snake::forward;
 };
+
+#endif
