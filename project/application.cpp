@@ -144,9 +144,10 @@ void Application::fillWalls() {
     auto b = sin(distance / (SIZE * 2) + time + 3.14 / 2) / 2 + 0.5;
 
     walls.push_back({
-        translate, glm::vec4(r, g, b, 0.1), // ambient
-        glm::vec4(0.0),                     // diffuse
-        glm::vec4(0.0),                     // specular
+        translate,               // position
+        glm::vec4(r, g, b, 0.1), // ambient
+        glm::vec4(0.0),          // diffuse
+        glm::vec4(0.0),          // specular
     });
   }
 }
