@@ -132,8 +132,9 @@ void Application::fillWalls() {
 
   for (auto pos : wallPositions) {
     // Oscillating blocks
+    auto distance = glm::distance(glm::vec3(0.0), pos);
     auto center = glm::vec3(SIZE / 2);
-    auto offset = glm::normalize(pos - center) * static_cast<float>(sin(time) + 1) * 0.1f;
+    auto offset = glm::normalize(pos - center) * static_cast<float>(sin(distance / (SIZE * 2) + time) + 1) * 0.1f;
     auto translate = glm::translate(glm::mat4(1.0), pos + offset);
 
     // Fancy colors
