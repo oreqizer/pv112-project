@@ -99,11 +99,6 @@ void on_mouse_move(GLFWwindow *window, double x, double y) {
   application->onMouseMove(window, x, y);
 }
 
-void on_mouse_pressed(GLFWwindow *window, int button, int action, int mods) {
-  Application *application = (Application *)glfwGetWindowUserPointer(window);
-  application->on_mouse_pressed(window, button, action, mods);
-}
-
 void on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods) {
   Application *application = (Application *)glfwGetWindowUserPointer(window);
   application->onKeyPressed(window, key, scancode, action, mods);

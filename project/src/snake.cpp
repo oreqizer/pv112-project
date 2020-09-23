@@ -5,6 +5,13 @@
 
 #include "snake.hpp"
 
+static const glm::vec3 Snake::top = glm::vec3(0, 1, 0);
+static const glm::vec3 Snake::bottom = glm::vec3(0, -1, 0);
+static const glm::vec3 Snake::right = glm::vec3(1, 0, 0);
+static const glm::vec3 Snake::left = glm::vec3(-1, 0, 0);
+static const glm::vec3 Snake::forward = glm::vec3(0, 0, 1);
+static const glm::vec3 Snake::back = glm::vec3(0, 0, -1);
+
 Snake::Snake(Food &food) : food(food), segments(std::vector<glm::vec3>()), timeMove(std::chrono::milliseconds(0)) {
   segments.push_back(glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2));
 
@@ -29,22 +36,22 @@ void Snake::update() {
 void Snake::turn(Arrow arrow) {
   switch (arrow) {
   case Arrow::Top:
-    direction = dir::top;
+    direction = Snake::top;
     break;
   case Arrow::Bottom:
-    direction = dir::bottom;
+    direction = Snake::bottom;
     break;
   case Arrow::Right:
-    direction = dir::right;
+    direction = Snake::right;
     break;
   case Arrow::Left:
-    direction = dir::left;
+    direction = Snake::left;
     break;
   case Arrow::Forward:
-    direction = dir::forward;
+    direction = Snake::forward;
     break;
   case Arrow::Back:
-    direction = dir::back;
+    direction = Snake::back;
     break;
   }
 }

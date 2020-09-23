@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <vector>
 
 #include "settings.hpp"
@@ -27,7 +28,7 @@ void Food::generate(const std::vector<glm::vec3> &blocked) {
     }
   }
 
-  auto index = rand() % options.size();
+  auto index = std::rand() % options.size();
 
   position = options[index];
 }

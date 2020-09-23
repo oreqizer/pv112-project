@@ -10,17 +10,15 @@
 #include "settings.hpp"
 #include "food.hpp"
 
-namespace dir {
-glm::vec3 top = glm::vec3(0, 1, 0);
-glm::vec3 bottom = glm::vec3(0, -1, 0);
-glm::vec3 right = glm::vec3(1, 0, 0);
-glm::vec3 left = glm::vec3(-1, 0, 0);
-glm::vec3 forward = glm::vec3(0, 0, 1);
-glm::vec3 back = glm::vec3(0, 0, -1);
-}; // namespace dir
-
 class Snake {
 public:
+  static const glm::vec3 top;
+  static const glm::vec3 bottom;
+  static const glm::vec3 right;
+  static const glm::vec3 left;
+  static const glm::vec3 forward;
+  static const glm::vec3 back;
+
   Snake(Food &food);
   ~Snake() = default;
 
