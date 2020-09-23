@@ -6,10 +6,10 @@
 
 class Time {
 public:
-    static void init();
-    static void update();
+  static void init();
+  static void update();
 
-    static std::chrono::milliseconds time;
-    static std::chrono::milliseconds timeDelta;
-    static std::chrono::milliseconds timeTotal;
+  static std::chrono::milliseconds time;
+  static std::chrono::milliseconds timeDelta;
+  static std::chrono::milliseconds timeTotal;
 };

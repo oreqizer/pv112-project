@@ -25,21 +25,15 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   // Lights
   std::vector<glm::vec4> edges = {
-    glm::vec4(0.0, 0.0, 0.0, 1.0),
-    glm::vec4(SIZE, 0.0, 0.0, 1.0),
-    glm::vec4(SIZE, SIZE, 0.0, 1.0),
-    glm::vec4(SIZE, 0.0, SIZE, 1.0),
-    glm::vec4(SIZE, SIZE, SIZE, 1.0),
-    glm::vec4(0.0, SIZE, 0.0, 1.0),
-    glm::vec4(0.0, SIZE, SIZE, 1.0),
-    glm::vec4(0.0, 0.0, SIZE, 1.0),
+      glm::vec4(0.0, 0.0, 0.0, 1.0),    glm::vec4(SIZE, 0.0, 0.0, 1.0), glm::vec4(SIZE, SIZE, 0.0, 1.0), glm::vec4(SIZE, 0.0, SIZE, 1.0),
+      glm::vec4(SIZE, SIZE, SIZE, 1.0), glm::vec4(0.0, SIZE, 0.0, 1.0), glm::vec4(0.0, SIZE, SIZE, 1.0), glm::vec4(0.0, 0.0, SIZE, 1.0),
   };
   for (auto edge : edges) {
     lights.push_back({
-      edge,
-      glm::vec4(0.0), // ambient
-      glm::vec4(1.0), // diffuse
-      glm::vec4(0.0), // specular
+        edge,
+        glm::vec4(0.0), // ambient
+        glm::vec4(1.0), // diffuse
+        glm::vec4(0.0), // specular
     });
   }
 
@@ -57,7 +51,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glNamedBufferStorage(bufferLights, lights.size() * sizeof(ObjectUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferSnake);
-  glNamedBufferStorage(bufferSnake, snake.size() * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(bufferSnake, SIZE * SIZE * SIZE * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferWalls);
   glNamedBufferStorage(bufferWalls, walls.size() * sizeof(ObjectUBO), walls.data(), GL_DYNAMIC_STORAGE_BIT);
@@ -72,9 +66,7 @@ Application::~Application() {
   glDeleteBuffers(1, &bufferWalls);
 }
 
-void Application::update() {
-  game->update();
-}
+void Application::update() { game->update(); }
 
 void Application::render() {
   // =====
@@ -82,7 +74,7 @@ void Application::render() {
   // =====
   //
   // 3. https://learnopengl.com/In-Practice/2D-Game/Audio
-  // 4. GUI
+  // 4. GUI https://stackoverflow.com/questions/5898922/i-have-a-problem-about-opengl-glut-glutstrokecharacter-the-code-did-not-work
 
   // --------------------------------------------------------------------------
   // UPDATE UBOS
@@ -149,10 +141,9 @@ void Application::fillWalls() {
     auto b = sin(distance / (SIZE * 2) + time + 3.14 / 2) / 2 + 0.5;
 
     walls.push_back({
-        translate,
-        glm::vec4(r, g, b, 0.1), // ambient
-        glm::vec4(0.0),          // diffuse
-        glm::vec4(0.0),          // specular
+        translate, glm::vec4(r, g, b, 0.1), // ambient
+        glm::vec4(0.0),                     // diffuse
+        glm::vec4(0.0),                     // specular
     });
   }
 }
@@ -197,22 +188,22 @@ void Application::onKeyPressed(GLFWwindow *window, int key, int scancode, int ac
   if (action == GLFW_PRESS) {
     switch (key) {
     case GLFW_KEY_W:
-      game->snake->turn(settings::Arrow::Top);
+      game->snake->turn(Arrow::Top);
       break;
     case GLFW_KEY_A:
-      game->snake->turn(settings::Arrow::Back);
+      game->snake->turn(Arrow::Back);
       break;
     case GLFW_KEY_S:
-      game->snake->turn(settings::Arrow::Bottom);
+      game->snake->turn(Arrow::Bottom);
       break;
     case GLFW_KEY_D:
-      game->snake->turn(settings::Arrow::Right);
+      game->snake->turn(Arrow::Right);
       break;
     case GLFW_KEY_Q:
-      game->snake->turn(settings::Arrow::Left);
+      game->snake->turn(Arrow::Left);
       break;
     case GLFW_KEY_E:
-      game->snake->turn(settings::Arrow::Forward);
+      game->snake->turn(Arrow::Forward);
       break;
     }
   }

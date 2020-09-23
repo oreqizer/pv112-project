@@ -32,9 +32,9 @@ struct LightUBO {
 };
 
 struct ObjectUBO {
-  glm::mat4 model;         // [  0 -  64) bytes
-  glm::vec4 colorAmbient;  // [ 64 -  80) bytes
-  glm::vec4 colorDiffuse;  // [ 80 -  96) bytes
+  glm::mat4 model;        // [  0 -  64) bytes
+  glm::vec4 colorAmbient; // [ 64 -  80) bytes
+  glm::vec4 colorDiffuse; // [ 80 -  96) bytes
 
   // Contains shininess in .w element
   glm::vec4 colorSpecular; // [ 96 - 112) bytes
@@ -50,7 +50,7 @@ public:
 
   void update();
   void render();
-  
+
   void fillWalls();
   void fillSnake();
 

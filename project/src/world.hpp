@@ -8,11 +8,11 @@
 
 class World {
 public:
-World();
-~World() = default;
+  World();
+  ~World() = default;
 
-std::vector<glm::vec3> render();
+  std::vector<glm::vec3> render();
 
 private:
-    std::vector<glm::vec3> wall;
+  std::vector<glm::vec3> wall;
 };

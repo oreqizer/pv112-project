@@ -5,15 +5,15 @@
 static const glm::vec3 Game::center = glm::vec3(SIZE / 2);
 
 Game::Game() {
-    Time::init();
+  Time::init();
 
-    food = new Food();
-    snake = new Snake(*food);
-    world = new World();
+  food = new Food();
+  snake = new Snake(*food);
+  world = new World();
 }
 
 void Game::update() {
-    Time::update();
+  Time::update();
 
-    snake->update();
+  snake->update();
 }

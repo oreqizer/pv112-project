@@ -4,11 +4,11 @@
 
 class Food {
 public:
-    Food();
-    ~Food() = default;
+  Food();
+  ~Food() = default;
 
-    glm::vec3 render();
-    void generate(const std::vector<glm::vec3> &options);
+  glm::vec3 render();
+  void generate(const std::vector<glm::vec3> &options);
 
-    glm::vec3 position;
+  glm::vec3 position;
 };

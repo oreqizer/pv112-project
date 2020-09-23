@@ -6,14 +6,14 @@
 
 class Game {
 public:
-    static const glm::vec3 center;
+  static const glm::vec3 center
 
-    Game();
-    ~Game() = default;
+  Game();
+  ~Game() = default;
 
-    void update();
+  void update();
 
-    Food *food;
-    Snake *snake;
-    World *world;
+  Food *food;
+  Snake *snake;
+  World *world;
 };
