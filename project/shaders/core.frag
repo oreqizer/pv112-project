@@ -17,23 +17,30 @@ layout(binding = 1, std430) buffer Lights {
 	Light lights[];
 };
 
-layout(binding = 2, std140) uniform Object {
+struct Object {
 	mat4 model_matrix;
 	vec4 ambient_color;
 	vec4 diffuse_color;
 	vec4 specular_color;
-} object;
+};
+
+layout(binding = 2, std430) buffer Objects {
+	Object objects[];
+};
 
 uniform float alpha = 1.0;
 
 layout(location = 0) in vec3 fs_position;
 layout(location = 1) in vec3 fs_normal;
+layout(location = 2) in flat int fs_instance_id;
 
 layout(location = 0) out vec4 final_color;
 
 void main()
 {
-	vec3 color_sum = vec3(0.5);
+	Object object = objects[fs_instance_id];
+
+	vec3 color_sum = vec3(0.0);
 
 	for (int i = 0; i < lights.length(); i++) {
 		Light light = lights[i];
@@ -60,5 +67,5 @@ void main()
 
     color_sum = color_sum / (color_sum + 1.0);   // tone mapping
     color_sum = pow(color_sum, vec3(1.0 / 2.2)); // gamma correction
-	final_color = vec4(color_sum, alpha);
+	final_color = vec4(object.diffuse_color.rgb, alpha);
 }

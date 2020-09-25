@@ -60,8 +60,8 @@ private:
   Camera camera;
 
   // Programs
-  GLuint main_program = create_program("build/08_ubo/shaders/main.vert", "build/08_ubo/shaders/main.frag");
-  GLuint draw_light_program = create_program("build/08_ubo/shaders/draw_light.vert", "build/08_ubo/shaders/draw_light.frag");
+  GLuint main_program = create_program("../shaders/main.vert", "../shaders/main.frag");
+  GLuint draw_light_program = create_program("../shaders/draw_light.vert", "../shaders/draw_light.frag");
 
   // Objects
   Mesh cube = Mesh::cube();

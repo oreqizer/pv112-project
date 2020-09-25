@@ -1,5 +1,4 @@
 #include <vector>
-#include <iostream>
 
 #include <glm/glm.hpp>
 
@@ -16,7 +15,7 @@ const glm::vec3 Snake::forward = glm::vec3(0, 0, 1);
 const glm::vec3 Snake::back = glm::vec3(0, 0, -1);
 
 Snake::Snake(Food &food) : food(food), segments(std::vector<glm::vec3>()), moveTimer(std::chrono::milliseconds(0)) {
-  auto initial = glm::vec3(static_cast<int>(Settings::Size) / 2, static_cast<int>(Settings::Size) / 2, static_cast<int>(Settings::Size) / 2);
+  auto initial = glm::vec3(settings::size / 2, settings::size / 2, settings::size / 2);
 
   segments.push_back(initial - direction);
   segments.push_back(initial);
@@ -28,21 +27,21 @@ std::vector<glm::vec3> Snake::render() { return segments; }
 
 void Snake::update() {
   moveTimer += Time::timeDelta;
-  if (segments.size() <= static_cast<int>(Speed::Slow)) {
-    if (moveTimer.count() > static_cast<int>(SpeedMs::Slow)) {
+  if (segments.size() <= settings::speed::slow) {
+    if (moveTimer.count() > settings::speedMs::slow) {
       move();
     }
     return;
   }
   
-  if (segments.size() <= static_cast<int>(Speed::Medium)) {
-    if (moveTimer.count() > static_cast<int>(SpeedMs::Medium)) {
+  if (segments.size() <= settings::speed::medium) {
+    if (moveTimer.count() > settings::speedMs::medium) {
       move();
     }
     return;
   }
 
-  if (moveTimer.count() > static_cast<int>(SpeedMs::Fast)) {
+  if (moveTimer.count() > settings::speedMs::fast) {
     move();
   }
 }
@@ -101,19 +100,19 @@ void Snake::move() {
 }
 
 bool Snake::isCrashed() {
-  if (segments.size() <= static_cast<int>(Speed::Slow)) {
-    if (moveTimer.count() > static_cast<int>(SpeedMs::Slow)) {
+  if (segments.size() <= settings::speed::slow) {
+    if (moveTimer.count() > settings::speedMs::slow) {
       return !isNextMovable();
     }
   }
   
-  if (segments.size() <= static_cast<int>(Speed::Medium)) {
-    if (moveTimer.count() > static_cast<int>(SpeedMs::Medium)) {
+  if (segments.size() <= settings::speed::medium) {
+    if (moveTimer.count() > settings::speedMs::medium) {
       return !isNextMovable();
     }
   }
 
-  if (moveTimer.count() > static_cast<int>(SpeedMs::Fast)) {
+  if (moveTimer.count() > settings::speedMs::fast) {
     return !isNextMovable();
   }
 
@@ -124,7 +123,7 @@ bool Snake::isNextMovable() {
   auto next = segments.back() + direction;
 
   // Map OOB
-  if (next.x < 0 || next.y < 0 || next.z < 0 || next.x > static_cast<int>(Settings::Size) || next.y > static_cast<int>(Settings::Size) || next.z > static_cast<int>(Settings::Size)) {
+  if (next.x < 0 || next.y < 0 || next.z < 0 || next.x > settings::size || next.y > settings::size || next.z > settings::size) {
     return false;
   }
 

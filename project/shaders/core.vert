@@ -22,6 +22,7 @@ layout(location = 1) in vec3 normal;
 
 layout(location = 0) out vec3 fs_position;
 layout(location = 1) out vec3 fs_normal;
+layout(location = 2) out flat int fs_instance_id;
 
 void main()
 {
@@ -29,6 +30,7 @@ void main()
 	
 	fs_position = vec3(object.model_matrix * vec4(position, 1.0));
 	fs_normal = transpose(inverse(mat3(object.model_matrix))) * normal;
+	fs_instance_id = gl_InstanceID;
 
     gl_Position = camera.projection * camera.view * vec4(fs_position, 1.0);
 }

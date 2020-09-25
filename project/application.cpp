@@ -4,6 +4,8 @@
 
 const float scaleCube = 2;
 const glm::vec3 scaleCubeVec = glm::vec3(scaleCube);
+const float alphaSnake = 0.75;
+const float alphaWall = 0.05;
 
 Application::Application(size_t initial_width, size_t initial_height) {
   this->width = initial_width;
@@ -16,23 +18,23 @@ Application::Application(size_t initial_width, size_t initial_height) {
   // --------------------------------------------------------------------------
 
   // Camera
-  camera.setDistance(int(Settings::Size) * scaleCube * 2);
+  camera.setDistance(settings::size * scaleCube * 2);
   camera.setEyeOffset(Game::center * scaleCubeVec);
 
   uboCamera.position = glm::vec4(camera.getEyePosition(), 1.0f);
-  uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center, glm::vec3(0.0f, 1.0f, 0.0f));
+  uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center * scaleCubeVec, glm::vec3(0.0f, 1.0f, 0.0f));
   uboCamera.projection = glm::perspective(glm::radians(45.0f), float(width) / float(height), 0.01f, 1000.0f);
 
   // Lights
   std::vector<glm::vec4> edges = {
       glm::vec4(0.0, 0.0, 0.0, 1.0),
-      glm::vec4(int(Settings::Size) * scaleCube, 0.0, 0.0, 1.0),
-      glm::vec4(int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, 0.0, 1.0),
-      glm::vec4(int(Settings::Size) * scaleCube, 0.0, int(Settings::Size) * scaleCube, 1.0),
-      glm::vec4(int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, 1.0),
-      glm::vec4(0.0, int(Settings::Size) * scaleCube, 0.0, 1.0),
-      glm::vec4(0.0, int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, 1.0),
-      glm::vec4(0.0, 0.0, int(Settings::Size) * scaleCube, 1.0),
+      glm::vec4(settings::size * scaleCube, 0.0, 0.0, 1.0),
+      glm::vec4(settings::size * scaleCube, settings::size * scaleCube, 0.0, 1.0),
+      glm::vec4(settings::size * scaleCube, 0.0, settings::size * scaleCube, 1.0),
+      glm::vec4(settings::size * scaleCube, settings::size * scaleCube, settings::size * scaleCube, 1.0),
+      glm::vec4(0.0, settings::size * scaleCube, 0.0, 1.0),
+      glm::vec4(0.0, settings::size * scaleCube, settings::size * scaleCube, 1.0),
+      glm::vec4(0.0, 0.0, settings::size * scaleCube, 1.0),
   };
   for (auto edge : edges) {
     lights.push_back({
@@ -44,7 +46,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   }
 
   // Initial walls
-  // fillWalls();
+  fillWalls();
 
   // --------------------------------------------------------------------------
   // CREATE BUFFERS
@@ -54,10 +56,10 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glNamedBufferStorage(bufferCamera, sizeof(CameraUBO), &uboCamera, GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferLights);
-  glNamedBufferStorage(bufferLights, lights.size() * sizeof(ObjectUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(bufferLights, lights.size() * sizeof(LightUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferSnake);
-  glNamedBufferStorage(bufferSnake, int(Settings::Size) * int(Settings::Size) * int(Settings::Size) * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(bufferSnake, settings::size * settings::size * settings::size * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferWalls);
   glNamedBufferStorage(bufferWalls, walls.size() * sizeof(ObjectUBO), walls.data(), GL_DYNAMIC_STORAGE_BIT);
@@ -88,7 +90,7 @@ void Application::render() {
 
   // Camera
   uboCamera.position = glm::vec4(camera.getEyePosition(), 1.0f);
-  uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center, glm::vec3(0.0f, 1.0f, 0.0f));
+  uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center * scaleCubeVec, glm::vec3(0.0f, 1.0f, 0.0f));
 
   glNamedBufferSubData(bufferCamera, 0, sizeof(CameraUBO), &uboCamera);
 
@@ -98,9 +100,9 @@ void Application::render() {
   glNamedBufferSubData(bufferSnake, 0, snake.size() * sizeof(ObjectUBO), snake.data());
 
   // Walls
-  // fillWalls();
+  fillWalls();
 
-  // glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
+  glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
 
   // --------------------------------------------------------------------------
   // DRAW THE SCENE
@@ -108,24 +110,26 @@ void Application::render() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glViewport(0, 0, this->width, this->height);
-  glEnable(GL_DEPTH_TEST);
+
+  glEnable(GL_BLEND);  
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glUseProgram(programCore);
 
   glBindBufferBase(GL_UNIFORM_BUFFER, 0, bufferCamera);
-  glBindBufferBase(GL_UNIFORM_BUFFER, 1, bufferLights);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, bufferLights);
 
   auto alphaUniform = glGetUniformLocation(programCore, "alpha");
 
   // Snake and food
-  glUniform1f(alphaUniform, 0.75);
+  glUniform1f(alphaUniform, alphaSnake);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferSnake);
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
                           static_cast<GLsizei>(snake.size()));
 
   // Walls
-  glUniform1f(alphaUniform, 0.1);
+  glUniform1f(alphaUniform, alphaWall);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, bufferWalls);
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
@@ -144,20 +148,20 @@ void Application::fillWalls() {
 
     // Oscillating blocks
     auto distance = glm::distance(glm::vec3(0.0), position);
-    auto center = glm::vec3(int(Settings::Size) / 2);
-    auto offset = glm::normalize(position - center) * static_cast<float>(sin(distance / (int(Settings::Size) * 2) + time) + 1) * 0.1f;
+    auto center = glm::vec3(settings::size / 2);
+    auto offset = glm::normalize(position - center) * static_cast<float>(sin(distance / settings::size + time * 3) * 0.2 + 1);
     auto translate = glm::translate(glm::mat4(1.0), position + offset);
 
     // Fancy colors
-    auto r = sin(distance / (int(Settings::Size) * 2) + time) / 2 + 0.5;
-    auto g = sin(distance / (int(Settings::Size) * 2) + time + 3.14) / 2 + 0.5;
-    auto b = sin(distance / (int(Settings::Size) * 2) + time + 3.14 / 2) / 2 + 0.5;
+    auto r = sin(distance / (settings::size) + time) / 2 + 0.5;
+    auto g = sin(distance / (settings::size) + time + 3.14) / 2 + 0.5;
+    auto b = sin(distance / (settings::size) + time + 3.14 / 2) / 2 + 0.5;
 
     walls.push_back({
-        translate,               // position
-        glm::vec4(r, g, b, 0.1), // ambient
-        glm::vec4(0.0),          // diffuse
-        glm::vec4(0.0),          // specular
+        translate,             // position
+        glm::vec4(0.0),        // ambient
+        glm::vec4(r, g, b, 1), // diffuse
+        glm::vec4(0.0),        // specular
     });
   }
 }
@@ -209,16 +213,19 @@ void Application::onKeyPressed(GLFWwindow *window, int key, int scancode, int ac
       game->snake->turn(Arrow::Bottom);
       break;
     case GLFW_KEY_D:
-      game->snake->turn(Arrow::Right);
-      break;
-    case GLFW_KEY_A:
       game->snake->turn(Arrow::Left);
       break;
+    case GLFW_KEY_A:
+      game->snake->turn(Arrow::Right);
+      break;
     case GLFW_KEY_E:
-      game->snake->turn(Arrow::Forward);
+      game->snake->turn(Arrow::Back);
       break;
     case GLFW_KEY_Q:
-      game->snake->turn(Arrow::Back);
+      game->snake->turn(Arrow::Forward);
+      break;
+    case GLFW_KEY_SPACE:
+      game = new Game();
       break;
     }
   }

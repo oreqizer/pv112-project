@@ -26,7 +26,6 @@ public:
   Snake *snake;
   World *world;
 
-private:
   GameState state = GameState::Playing;
 };
 

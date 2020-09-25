@@ -2,9 +2,20 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-enum class Settings : int {
-  Size = 24,
-};
+namespace settings {
+  const int size = 24;
+
+  namespace speed {
+    const int slow = 10;
+    const int medium = 50;
+  }
+
+  namespace speedMs {
+    const int slow = 500;
+    const int medium = 250;
+    const int fast = 125;
+  }
+}
 
 enum class Arrow {
   Top,
@@ -19,17 +30,6 @@ enum class State {
   Game,
   Score,
   Menu,
-};
-
-enum class Speed : int {
-  Slow = 10,
-  Medium = 50,
-};
-
-enum class SpeedMs : int {
-  Slow = 500,
-  Medium = 250,
-  Fast = 125,
 };
 
 #endif

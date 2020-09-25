@@ -1,9 +1,8 @@
 #include "time.hpp"
-#include <iostream>
 
 #include "game.hpp"
 
-const glm::vec3 Game::center = glm::vec3(int(Settings::Size) / 2);
+const glm::vec3 Game::center = glm::vec3(settings::size / 2);
 
 Game::Game() {
   Time::init();
