@@ -173,13 +173,13 @@ void Application::fillSnake() {
   auto snakePositions = game->snake->render();
 
   auto ambient = glm::vec4(0.0);
-  auto diffuse = glm::vec4(1.0);
+  auto diffuse = game->state == GameState::Crashed ? glm::vec4(0.8, 0, 0, 1.0) : glm::vec4(1.0);
   auto specular = glm::vec4(0.0);
 
   snake.push_back({
       glm::translate(glm::mat4(1.0), foodPosition * scaleCubeVec),
       ambient,
-      diffuse,
+      glm::vec4(1.0),
       specular,
   });
 
