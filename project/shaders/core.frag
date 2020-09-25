@@ -33,7 +33,7 @@ layout(location = 0) out vec4 final_color;
 
 void main()
 {
-	vec3 color_sum = vec3(0.0);
+	vec3 color_sum = vec3(0.5);
 
 	for (int i = 0; i < lights.length(); i++) {
 		Light light = lights[i];

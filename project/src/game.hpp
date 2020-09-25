@@ -8,6 +8,11 @@
 #include "snake.hpp"
 #include "world.hpp"
 
+enum class GameState {
+  Playing,
+  Crashed,
+};
+
 class Game {
 public:
   static const glm::vec3 center;
@@ -20,6 +25,9 @@ public:
   Food *food;
   Snake *snake;
   World *world;
+
+private:
+  GameState state = GameState::Playing;
 };
 
 #endif

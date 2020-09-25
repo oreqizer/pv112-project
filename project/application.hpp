@@ -56,7 +56,6 @@ public:
 
   void onResize(GLFWwindow *window, int width, int height);
   void onMouseMove(GLFWwindow *window, double x, double y);
-  void on_mouse_pressed(GLFWwindow *window, int button, int action, int mods);
   void onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 private:

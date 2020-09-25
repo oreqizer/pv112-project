@@ -1,4 +1,5 @@
 #include "time.hpp"
+#include <iostream>
 
 #include "game.hpp"
 
@@ -15,5 +16,11 @@ Game::Game() {
 void Game::update() {
   Time::update();
 
-  snake->update();
+  if (snake->isCrashed()) {
+    state = GameState::Crashed;
+  }
+
+  if (state == GameState::Playing) {
+    snake->update();
+  }
 }

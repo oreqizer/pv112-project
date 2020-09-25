@@ -2,6 +2,9 @@
 
 #include "application.hpp"
 
+const float scaleCube = 2;
+const glm::vec3 scaleCubeVec = glm::vec3(scaleCube);
+
 Application::Application(size_t initial_width, size_t initial_height) {
   this->width = initial_width;
   this->height = initial_height;
@@ -13,8 +16,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
   // --------------------------------------------------------------------------
 
   // Camera
-  camera.setDistance(int(Settings::Size));
-  camera.setEyeOffset(Game::center);
+  camera.setDistance(int(Settings::Size) * scaleCube * 2);
+  camera.setEyeOffset(Game::center * scaleCubeVec);
 
   uboCamera.position = glm::vec4(camera.getEyePosition(), 1.0f);
   uboCamera.view = glm::lookAt(camera.getEyePosition(), Game::center, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -22,8 +25,14 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   // Lights
   std::vector<glm::vec4> edges = {
-      glm::vec4(0.0, 0.0, 0.0, 1.0),    glm::vec4(int(Settings::Size), 0.0, 0.0, 1.0), glm::vec4(int(Settings::Size), int(Settings::Size), 0.0, 1.0), glm::vec4(int(Settings::Size), 0.0, int(Settings::Size), 1.0),
-      glm::vec4(int(Settings::Size), int(Settings::Size), int(Settings::Size), 1.0), glm::vec4(0.0, int(Settings::Size), 0.0, 1.0), glm::vec4(0.0, int(Settings::Size), int(Settings::Size), 1.0), glm::vec4(0.0, 0.0, int(Settings::Size), 1.0),
+      glm::vec4(0.0, 0.0, 0.0, 1.0),
+      glm::vec4(int(Settings::Size) * scaleCube, 0.0, 0.0, 1.0),
+      glm::vec4(int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, 0.0, 1.0),
+      glm::vec4(int(Settings::Size) * scaleCube, 0.0, int(Settings::Size) * scaleCube, 1.0),
+      glm::vec4(int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, 1.0),
+      glm::vec4(0.0, int(Settings::Size) * scaleCube, 0.0, 1.0),
+      glm::vec4(0.0, int(Settings::Size) * scaleCube, int(Settings::Size) * scaleCube, 1.0),
+      glm::vec4(0.0, 0.0, int(Settings::Size) * scaleCube, 1.0),
   };
   for (auto edge : edges) {
     lights.push_back({
@@ -35,7 +44,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   }
 
   // Initial walls
-  fillWalls();
+  // fillWalls();
 
   // --------------------------------------------------------------------------
   // CREATE BUFFERS
@@ -89,9 +98,9 @@ void Application::render() {
   glNamedBufferSubData(bufferSnake, 0, snake.size() * sizeof(ObjectUBO), snake.data());
 
   // Walls
-  fillWalls();
+  // fillWalls();
 
-  glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
+  // glNamedBufferSubData(bufferWalls, 0, walls.size() * sizeof(ObjectUBO), walls.data());
 
   // --------------------------------------------------------------------------
   // DRAW THE SCENE
@@ -131,11 +140,13 @@ void Application::fillWalls() {
   auto time = glfwGetTime();
 
   for (auto pos : wallPositions) {
+    auto position = pos * scaleCubeVec;
+
     // Oscillating blocks
-    auto distance = glm::distance(glm::vec3(0.0), pos);
+    auto distance = glm::distance(glm::vec3(0.0), position);
     auto center = glm::vec3(int(Settings::Size) / 2);
-    auto offset = glm::normalize(pos - center) * static_cast<float>(sin(distance / (int(Settings::Size) * 2) + time) + 1) * 0.1f;
-    auto translate = glm::translate(glm::mat4(1.0), pos + offset);
+    auto offset = glm::normalize(position - center) * static_cast<float>(sin(distance / (int(Settings::Size) * 2) + time) + 1) * 0.1f;
+    auto translate = glm::translate(glm::mat4(1.0), position + offset);
 
     // Fancy colors
     auto r = sin(distance / (int(Settings::Size) * 2) + time) / 2 + 0.5;
@@ -158,18 +169,19 @@ void Application::fillSnake() {
   auto snakePositions = game->snake->render();
 
   auto ambient = glm::vec4(0.0);
-  auto diffuse = glm::vec4(1.0, 1.0, 1.0, 0.5);
+  auto diffuse = glm::vec4(1.0);
   auto specular = glm::vec4(0.0);
 
   snake.push_back({
-      glm::translate(glm::mat4(1.0), foodPosition),
+      glm::translate(glm::mat4(1.0), foodPosition * scaleCubeVec),
       ambient,
       diffuse,
       specular,
   });
 
   for (auto pos : snakePositions) {
-    auto translate = glm::translate(glm::mat4(1.0), pos);
+    auto position = pos * scaleCubeVec;
+    auto translate = glm::translate(glm::mat4(1.0), position);
 
     snake.push_back({
         translate,
@@ -193,20 +205,20 @@ void Application::onKeyPressed(GLFWwindow *window, int key, int scancode, int ac
     case GLFW_KEY_W:
       game->snake->turn(Arrow::Top);
       break;
-    case GLFW_KEY_A:
-      game->snake->turn(Arrow::Back);
-      break;
     case GLFW_KEY_S:
       game->snake->turn(Arrow::Bottom);
       break;
     case GLFW_KEY_D:
       game->snake->turn(Arrow::Right);
       break;
-    case GLFW_KEY_Q:
+    case GLFW_KEY_A:
       game->snake->turn(Arrow::Left);
       break;
     case GLFW_KEY_E:
       game->snake->turn(Arrow::Forward);
+      break;
+    case GLFW_KEY_Q:
+      game->snake->turn(Arrow::Back);
       break;
     }
   }

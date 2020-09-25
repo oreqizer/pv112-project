@@ -28,14 +28,17 @@ public:
   void update();
   void turn(Arrow arrow);
   void move();
+  bool isCrashed();
   bool isNextMovable();
   bool isColliding(const glm::vec3 &pos);
 
 private:
   Food &food;
+
   std::vector<glm::vec3> segments;
-  std::chrono::milliseconds timeMove;
   glm::vec3 direction = Snake::forward;
+  std::chrono::milliseconds moveTimer;
+  bool movePending = false;
 };
 
 #endif
