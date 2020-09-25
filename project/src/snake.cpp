@@ -1,5 +1,7 @@
 #include <vector>
 
+#include <glm/glm.hpp>
+
 #include "settings.hpp"
 #include "time.hpp"
 
@@ -12,8 +14,8 @@ const glm::vec3 Snake::left = glm::vec3(-1, 0, 0);
 const glm::vec3 Snake::forward = glm::vec3(0, 0, 1);
 const glm::vec3 Snake::back = glm::vec3(0, 0, -1);
 
-Snake::Snake(Food &food) : food(food), segments(std::vector<glm::vec3>()), timeMove(std::chrono::milliseconds(0)) {
-  segments.push_back(glm::vec3(SIZE / 2, SIZE / 2, SIZE / 2));
+Snake::Snake(Food &food) : food(food), segments(std::vector<glm::vec3>()) {
+  segments.push_back(glm::vec3(static_cast<int>(Settings::Size) / 2, static_cast<int>(Settings::Size) / 2, static_cast<int>(Settings::Size) / 2));
 
   food.generate(segments);
 };
@@ -72,7 +74,7 @@ bool Snake::isNextMovable() {
   auto next = segments.back() + direction;
 
   // Map OOB
-  if (next.x < 0 || next.y < 0 || next.z < 0 || next.x > SIZE || next.y > SIZE || next.z > SIZE) {
+  if (next.x < 0 || next.y < 0 || next.z < 0 || next.x > static_cast<int>(Settings::Size) || next.y > static_cast<int>(Settings::Size) || next.z > static_cast<int>(Settings::Size)) {
     return false;
   }
 

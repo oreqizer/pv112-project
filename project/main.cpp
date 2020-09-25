@@ -7,7 +7,6 @@
 
 void on_resize(GLFWwindow *window, int width, int height);
 void on_mouse_move(GLFWwindow *window, double x, double y);
-void on_mouse_pressed(GLFWwindow *window, int button, int action, int mods);
 void on_key_pressed(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 // Callback function to be called when OpenGL emits an error
@@ -33,7 +32,7 @@ int main(void) {
   glfwWindowHint(GLFW_SAMPLES, 4);
 
   // Create window
-  GLFWwindow *window = glfwCreateWindow(initial_width, initial_height, "08: UBO Final", NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(initial_width, initial_height, "Snake 3D", NULL, NULL);
   if (!window) {
     std::cerr << "Could not create a window!" << std::endl;
     glfwTerminate();
@@ -60,7 +59,6 @@ int main(void) {
     glfwSetWindowUserPointer(window, &application);
     glfwSetWindowSizeCallback(window, on_resize);
     glfwSetCursorPosCallback(window, on_mouse_move);
-    glfwSetMouseButtonCallback(window, on_mouse_pressed);
     glfwSetKeyCallback(window, on_key_pressed);
 
     // Loop

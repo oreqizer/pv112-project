@@ -1,15 +1,14 @@
+#pragma once
 #ifndef FOOD_H
 #define FOOD_H
 
 #include <vector>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 class Food {
 public:
-  Food();
+  Food() {};
   ~Food() = default;
 
   glm::vec3 render();

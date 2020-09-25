@@ -1,6 +1,9 @@
 #include "program.hpp"
+#include <iostream>
+// #include <filesystem>
 
 GLuint compile_shader(const std::string &path, GLenum shader_type) {
+  // std::cerr << std::filesystem::current_path() << std::endl;
   const std::string shader_source = load_file(path);
   const char *shader_str = shader_source.data();
 

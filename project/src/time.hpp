@@ -1,11 +1,8 @@
+#pragma once
 #ifndef TIME_H
 #define TIME_H
 
 #include <chrono>
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 
 class Time {
 public:

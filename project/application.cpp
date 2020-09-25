@@ -13,7 +13,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   // --------------------------------------------------------------------------
 
   // Camera
-  camera.setDistance(SIZE);
+  camera.setDistance(int(Settings::Size));
   camera.setEyeOffset(Game::center);
 
   uboCamera.position = glm::vec4(camera.getEyePosition(), 1.0f);
@@ -22,8 +22,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   // Lights
   std::vector<glm::vec4> edges = {
-      glm::vec4(0.0, 0.0, 0.0, 1.0),    glm::vec4(SIZE, 0.0, 0.0, 1.0), glm::vec4(SIZE, SIZE, 0.0, 1.0), glm::vec4(SIZE, 0.0, SIZE, 1.0),
-      glm::vec4(SIZE, SIZE, SIZE, 1.0), glm::vec4(0.0, SIZE, 0.0, 1.0), glm::vec4(0.0, SIZE, SIZE, 1.0), glm::vec4(0.0, 0.0, SIZE, 1.0),
+      glm::vec4(0.0, 0.0, 0.0, 1.0),    glm::vec4(int(Settings::Size), 0.0, 0.0, 1.0), glm::vec4(int(Settings::Size), int(Settings::Size), 0.0, 1.0), glm::vec4(int(Settings::Size), 0.0, int(Settings::Size), 1.0),
+      glm::vec4(int(Settings::Size), int(Settings::Size), int(Settings::Size), 1.0), glm::vec4(0.0, int(Settings::Size), 0.0, 1.0), glm::vec4(0.0, int(Settings::Size), int(Settings::Size), 1.0), glm::vec4(0.0, 0.0, int(Settings::Size), 1.0),
   };
   for (auto edge : edges) {
     lights.push_back({
@@ -48,7 +48,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glNamedBufferStorage(bufferLights, lights.size() * sizeof(ObjectUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferSnake);
-  glNamedBufferStorage(bufferSnake, SIZE * SIZE * SIZE * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(bufferSnake, int(Settings::Size) * int(Settings::Size) * int(Settings::Size) * sizeof(ObjectUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferWalls);
   glNamedBufferStorage(bufferWalls, walls.size() * sizeof(ObjectUBO), walls.data(), GL_DYNAMIC_STORAGE_BIT);
@@ -133,14 +133,14 @@ void Application::fillWalls() {
   for (auto pos : wallPositions) {
     // Oscillating blocks
     auto distance = glm::distance(glm::vec3(0.0), pos);
-    auto center = glm::vec3(SIZE / 2);
-    auto offset = glm::normalize(pos - center) * static_cast<float>(sin(distance / (SIZE * 2) + time) + 1) * 0.1f;
+    auto center = glm::vec3(int(Settings::Size) / 2);
+    auto offset = glm::normalize(pos - center) * static_cast<float>(sin(distance / (int(Settings::Size) * 2) + time) + 1) * 0.1f;
     auto translate = glm::translate(glm::mat4(1.0), pos + offset);
 
     // Fancy colors
-    auto r = sin(distance / (SIZE * 2) + time) / 2 + 0.5;
-    auto g = sin(distance / (SIZE * 2) + time + 3.14) / 2 + 0.5;
-    auto b = sin(distance / (SIZE * 2) + time + 3.14 / 2) / 2 + 0.5;
+    auto r = sin(distance / (int(Settings::Size) * 2) + time) / 2 + 0.5;
+    auto g = sin(distance / (int(Settings::Size) * 2) + time + 3.14) / 2 + 0.5;
+    auto b = sin(distance / (int(Settings::Size) * 2) + time + 3.14 / 2) / 2 + 0.5;
 
     walls.push_back({
         translate,               // position

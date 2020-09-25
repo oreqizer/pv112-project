@@ -68,7 +68,7 @@ private:
   Camera camera;
 
   // Programs
-  GLuint programCore = create_program("build/project/shaders/core.vert", "build/project/shaders/core.frag");
+  GLuint programCore = create_program("../shaders/core.vert", "../shaders/core.frag");
 
   // Objects
   Mesh cube = Mesh::cube();

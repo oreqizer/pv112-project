@@ -2,7 +2,7 @@
 
 #include "game.hpp"
 
-const glm::vec3 Game::center = glm::vec3(SIZE / 2);
+const glm::vec3 Game::center = glm::vec3(int(Settings::Size) / 2);
 
 Game::Game() {
   Time::init();

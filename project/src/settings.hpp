@@ -1,10 +1,10 @@
+#pragma once
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#define SIZE 24
-#define FRAMERATE 165
-#define WIDTH 1280
-#define HEIGHT 720
+enum class Settings : int {
+  Size = 24,
+};
 
 enum class Arrow {
   Top,
@@ -21,12 +21,12 @@ enum class State {
   Menu,
 };
 
-enum class Speed {
+enum class Speed : int {
   Slow = 10,
   Medium = 50,
 };
 
-enum class SpeedMs {
+enum class SpeedMs : int {
   Slow = 500,
   Medium = 250,
   Fast = 125,

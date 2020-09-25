@@ -1,10 +1,9 @@
+#pragma once
 #ifndef WORLD_H
 #define WORLD_H
 
 #include <vector>
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 
 #include "mesh.hpp"
