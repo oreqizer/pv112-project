@@ -144,6 +144,12 @@ void Application::fillWalls() {
   auto time = glfwGetTime();
 
   for (auto pos : wallPositions) {
+    // TODO
+    // add "distance" field to ObjectUBO
+    // make separate shader for wall and snake
+    // send uniform "size" and "time" to vertex/fragment shader
+    // calculate offset in vertex shader, rgb in fragment shader
+
     auto position = pos * scaleCubeVec;
 
     // Oscillating blocks
