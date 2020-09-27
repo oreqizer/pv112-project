@@ -31,13 +31,25 @@ struct LightUBO {
   glm::vec4 specular;
 };
 
-struct ObjectUBO {
+struct SnakeUBO {
   glm::mat4 model;        // [  0 -  64) bytes
   glm::vec4 colorAmbient; // [ 64 -  80) bytes
   glm::vec4 colorDiffuse; // [ 80 -  96) bytes
 
   // Contains shininess in .w element
   glm::vec4 colorSpecular; // [ 96 - 112) bytes
+};
+
+struct WallUBO {
+  glm::mat4 model;        // [  0 -  64) bytes
+  glm::vec4 colorAmbient; // [ 64 -  80) bytes
+  glm::vec4 colorDiffuse; // [ 80 -  96) bytes
+
+  // Contains shininess in .w element
+  glm::vec4 colorSpecular; // [ 96 - 112) bytes
+
+  // Contains distance in .x element
+  glm::vec4 distance;      // [112 - 128) bytes
 };
 
 // ----------------------------------------------------------------------------
@@ -67,7 +79,8 @@ private:
   Camera camera;
 
   // Programs
-  GLuint programCore = create_program("../shaders/core.vert", "../shaders/core.frag");
+  GLuint programSnake = create_program("../shaders/snake.vert", "../shaders/snake.frag");
+  GLuint programWall = create_program("../shaders/wall.vert", "../shaders/wall.frag");
 
   // Objects
   Mesh cube = Mesh::cube();
@@ -81,10 +94,10 @@ private:
   GLuint bufferLights = 0;
 
   // Snake / food
-  std::vector<ObjectUBO> snake;
+  std::vector<SnakeUBO> snake;
   GLuint bufferSnake = 0;
 
   // Walls
-  std::vector<ObjectUBO> walls;
+  std::vector<WallUBO> walls;
   GLuint bufferWalls = 0;
 };

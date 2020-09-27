@@ -22,6 +22,7 @@ struct Object {
 	vec4 ambient_color;
 	vec4 diffuse_color;
 	vec4 specular_color;
+	vec4 dist;
 };
 
 layout(binding = 2, std430) buffer Objects {
@@ -29,6 +30,8 @@ layout(binding = 2, std430) buffer Objects {
 };
 
 uniform float alpha = 1.0;
+uniform int size = 10;
+uniform float time = 1.0;
 
 layout(location = 0) in vec3 fs_position;
 layout(location = 1) in vec3 fs_normal;
@@ -42,6 +45,12 @@ void main()
 
 	vec3 color_sum = vec3(0.0);
 
+    float r = sin(object.dist.x / size + time) / 2 + 0.5;
+    float g = sin(object.dist.x / size + time + 3.14) / 2 + 0.5;
+    float b = sin(object.dist.x / size + time + 3.14 / 2) / 2 + 0.5;
+
+	vec3 object_diffuse = object.diffuse_color.rgb * vec3(r, g, b);
+
 	for (int i = 0; i < lights.length(); i++) {
 		Light light = lights[i];
 		vec3 light_vector = light.position.xyz - fs_position * light.position.w;
@@ -54,18 +63,17 @@ void main()
 		float NdotH = max(dot(N, H), 0.0001);
 
 		vec3 ambient = object.ambient_color.rgb * light.ambient_color.rgb;
-		vec3 diffuse = object.diffuse_color.rgb * light.diffuse_color.rgb;
+		vec3 diffuse = object_diffuse * light.diffuse_color.rgb;
 		vec3 specular = object.specular_color.rgb * light.specular_color.rgb;
 
 		vec3 color = ambient.rgb
 			+ NdotL * diffuse.rgb 
 			+ pow(NdotH, object.specular_color.w) * specular.rgb;
-		color /= length(light_vector);
 
 		color_sum += color;
 	}
 
     color_sum = color_sum / (color_sum + 1.0);   // tone mapping
     color_sum = pow(color_sum, vec3(1.0 / 2.2)); // gamma correction
-	final_color = vec4(object.diffuse_color.rgb, alpha);
+	final_color = vec4(color_sum, alpha);
 }

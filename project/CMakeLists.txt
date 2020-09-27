@@ -11,5 +11,7 @@ target_include_directories(project
 	PRIVATE ${FRAMEWORK_INCLUDE_DIR}
 )
 
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/core.vert" "${CMAKE_CURRENT_BINARY_DIR}/shaders/core.vert" COPYONLY)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/core.frag" "${CMAKE_CURRENT_BINARY_DIR}/shaders/core.frag" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/snake.vert" "${CMAKE_CURRENT_BINARY_DIR}/shaders/snake.vert" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/snake.frag" "${CMAKE_CURRENT_BINARY_DIR}/shaders/snake.frag" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/wall.vert" "${CMAKE_CURRENT_BINARY_DIR}/shaders/wall.vert" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/wall.frag" "${CMAKE_CURRENT_BINARY_DIR}/shaders/wall.frag" COPYONLY)
