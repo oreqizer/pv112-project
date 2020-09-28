@@ -8,13 +8,17 @@
 
 class Audio {
 public:
-    Audio();
-    ~Audio();
+    static const std::string& nom;
+    static const std::string& background;
+    static const std::string& crash;
 
-    void play(const std::string &sound);
+    Audio() {};
+    ~Audio() = default;
+
+    static void play(const std::string &sound, bool loop = false);
 
 private:
-    // irrklang::ISoundEngine* engine;
+    static irrklang::ISoundEngine* engine;
 };
 
 #endif

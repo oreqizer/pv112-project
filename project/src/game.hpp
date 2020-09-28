@@ -8,6 +8,7 @@
 #include "snake.hpp"
 #include "world.hpp"
 #include "audio.hpp"
+#include "gui.hpp"
 
 enum class GameState {
   Playing,
@@ -27,6 +28,7 @@ public:
   Snake *snake;
   World *world;
   Audio *audio;
+  Gui *gui;
 
   GameState state = GameState::Playing;
 };

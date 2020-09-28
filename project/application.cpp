@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "src/audio.hpp"
+
 #include "application.hpp"
 
 const float scaleCube = 2;
@@ -15,6 +17,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
   this->height = initial_height;
 
   game = new Game();
+
+  Audio::play(Audio::background, true);
 
   // --------------------------------------------------------------------------
   // Initialize UBO Data

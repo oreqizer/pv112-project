@@ -4,6 +4,7 @@
 
 #include "settings.hpp"
 #include "time.hpp"
+#include "audio.hpp"
 
 #include "snake.hpp"
 
@@ -108,6 +109,7 @@ void Snake::move() {
     segments.erase(segments.begin());
   } else {
     food.generate(segments);
+    Audio::play(Audio::nom);
   }
 
   movePending = false;
