@@ -26,6 +26,7 @@ struct CameraUBO {
 
 struct LightUBO {
   glm::vec4 position;
+	glm::vec4 direction; // .w is cos(angle)
   glm::vec4 ambient;
   glm::vec4 diffuse;
   glm::vec4 specular;

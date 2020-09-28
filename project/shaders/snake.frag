@@ -8,6 +8,7 @@ layout(binding = 0, std140) uniform Camera {
 
 struct Light {
 	vec4 position;
+	vec4 direction; // .w is radius
 	vec4 ambient_color;
 	vec4 diffuse_color;
 	vec4 specular_color;
@@ -40,32 +41,59 @@ void main()
 {
 	Object object = objects[fs_instance_id];
 
+	vec4 spec = vec4(0.0);
+	float intensity = 0.0;
 	vec3 color_sum = vec3(0.0);
 
 	for (int i = 0; i < lights.length(); i++) {
+		// Light light = lights[i];
+		
+		// vec3 ldir = light.position.xyz - fs_position;
+
+		// vec3 ld = normalize(ldir);
+		// vec3 sd = normalize(-light.direction.xyz);
+
+		// // inside the cone
+		// if (dot(sd, ld) > light.direction.w) {
+		// 	vec3 n = normalize(fs_normal);
+		// 	intensity = max(dot(n, ld), 100.0);
+
+		// 	if (intensity > 0.0) {
+		// 		vec3 h = normalize(camera.position - fs_position);
+		// 		float intSpec = max(dot(h, n), 0.0);
+		// 		// spec = object.specular_color * pow(intSpec, object.specular_color.w);
+		// 		spec += object.specular_color * pow(intSpec, 4) / lights.length();
+		// 	}
+		// }
+
 		Light light = lights[i];
 		vec3 light_vector = light.position.xyz - fs_position * light.position.w;
 		vec3 L = normalize(light_vector);
 		vec3 N = normalize(fs_normal);
 		vec3 E = normalize(camera.position - fs_position);
 		vec3 H = normalize(L + E);
+		vec3 S = normalize(-light.direction.xyz);
 
-		float NdotL = max(dot(N, L), 0.0);
-		float NdotH = max(dot(N, H), 0.0001);
+		// if (dot(S, L) > light.direction.w) {
+			float NdotL = max(dot(N, L), 0.0);
+			float NdotH = max(dot(N, H), 0.0001);
 
-		vec3 ambient = object.ambient_color.rgb * light.ambient_color.rgb;
-		vec3 diffuse = object.diffuse_color.rgb * light.diffuse_color.rgb;
-		vec3 specular = object.specular_color.rgb * light.specular_color.rgb;
+			vec3 ambient = object.ambient_color.rgb * light.ambient_color.rgb;
+			vec3 diffuse = object.diffuse_color.rgb * light.diffuse_color.rgb;
+			vec3 specular = object.specular_color.rgb * light.specular_color.rgb;
 
-		vec3 color = ambient.rgb
-			+ NdotL * diffuse.rgb 
-			+ pow(NdotH, object.specular_color.w) * specular.rgb;
-		color /= length(light_vector);
+			vec3 color = ambient.rgb
+				+ NdotL * diffuse.rgb 
+				+ pow(NdotH, object.specular_color.w) * specular.rgb;
+			// color /= length(light_vector);
 
-		color_sum += color;
+			color_sum += color;
+		// }	
 	}
 
-    color_sum = color_sum / (color_sum + 1.0);   // tone mapping
-    color_sum = pow(color_sum, vec3(1.0 / 2.2)); // gamma correction
+    // color_sum = color_sum / (color_sum + 1.0);   // tone mapping
+    // color_sum = pow(color_sum, vec3(1.0 / 2.2)); // gamma correction
+
+	// final_color = vec4(max(intensity * object.diffuse_color.rgb + spec.rgb, object.ambient_color.rgb * 0.1), alpha);
 	final_color = vec4(color_sum, alpha);
 }
