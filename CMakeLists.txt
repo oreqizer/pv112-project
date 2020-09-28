@@ -45,6 +45,28 @@ else()
     set(GLAD_LIBRARIES glad)
 endif()
 
+# FREEGLUT library
+set(FREEGLUT_INSTALL_DIR "${CMAKE_BINARY_DIR}/freeglut")
+set(FREEGLUT_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/freeglut/include")
+# "freeglutd" only for Debug, change to "freeglut" for release
+set(FREEGLUT_LIBRARIES   "${FREEGLUT_INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}freeglutd${CMAKE_STATIC_LIBRARY_SUFFIX}")
+ExternalProject_Add(freeglut
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/freeglut"
+
+    DOWNLOAD_COMMAND ""
+    UPDATE_COMMAND ""
+
+    CMAKE_ARGS
+        "-DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/freeglut"
+        "-DBUILD_SHARED_LIBS=OFF"
+
+    BUILD_BYPRODUCTS ${FREEGLUT_LIBRARIES}
+)
+
+# IRRKLANG library
+set(IRRKLANG_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/irrklang/include")
+set(IRRKLANG_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/libs/irrklang/lib/Winx64-visualStudio/irrKlang.lib")
+
 # Single header libraries
 set(SINGLE_HEADER_LIBS_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/libs/single_header")
 
@@ -72,12 +94,14 @@ add_library(framework
 	"${FRAMEWORK_INCLUDE_DIR}/texture.hpp"
 	"${FRAMEWORK_SRC_DIR}/texture.cpp"
 )
-add_dependencies(framework glfw glad)
+add_dependencies(framework glfw glad freeglut)
 
-target_link_libraries(framework ${GLFW_LIBRARIES} ${GLAD_LIBRARIES})
+target_link_libraries(framework ${GLFW_LIBRARIES} ${GLAD_LIBRARIES} ${FREEGLUT_LIBRARIES} ${IRRKLANG_LIBRARY})
 target_include_directories(framework 
 	PRIVATE ${GLFW_INCLUDE_DIR}
 	PRIVATE ${GLAD_INCLUDE_DIR}
+	PRIVATE ${FREEGLUT_INCLUDE_DIR}
+	PRIVATE ${IRRKLANG_INCLUDE_DIR}
 	PRIVATE ${FRAMEWORK_INCLUDE_DIR}
 	PRIVATE ${SINGLE_HEADER_LIBS_INCLUDE_DIR}
 	PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/objects"

@@ -7,6 +7,7 @@
 #include "food.hpp"
 #include "snake.hpp"
 #include "world.hpp"
+#include "audio.hpp"
 
 enum class GameState {
   Playing,
@@ -18,13 +19,14 @@ public:
   static const glm::vec3 center;
 
   Game();
-  ~Game() = default;
+  ~Game();
 
   void update();
 
   Food *food;
   Snake *snake;
   World *world;
+  Audio *audio;
 
   GameState state = GameState::Playing;
 };

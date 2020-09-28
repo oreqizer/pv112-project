@@ -7,9 +7,13 @@ const glm::vec3 Game::center = glm::vec3(settings::size / 2);
 Game::Game() {
   Time::init();
 
+  audio = new Audio();
   food = new Food();
   snake = new Snake(*food);
   world = new World();
+
+  // Test
+  // audio->play("../sound/crunch.mp3");
 }
 
 void Game::update() {
@@ -22,4 +26,11 @@ void Game::update() {
   if (state == GameState::Playing) {
     snake->update();
   }
+}
+
+Game::~Game() {
+  delete(snake);
+  delete(food);
+  delete(world);
+  delete(audio);
 }
