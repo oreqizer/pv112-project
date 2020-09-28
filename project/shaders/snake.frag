@@ -55,6 +55,7 @@ void main()
 		
 		vec3 color = object.ambient_color.rgb * light.ambient_color.rgb;
 
+		// === 2. CONE LIGHTS ===
 		if (dot(S, L) > light.direction.w) {
 			float NdotL = max(dot(N, L), 0.0);
 			float NdotH = max(dot(N, H), 0.0001);
