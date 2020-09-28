@@ -17,23 +17,23 @@ const glm::vec3 Snake::back = glm::vec3(0, 0, -1);
 Snake::Snake(Food &food) : food(food), segments(std::vector<glm::vec3>()), moveTimer(std::chrono::milliseconds(0)) {
   auto initial = glm::vec3(settings::size / 2, settings::size / 2, settings::size / 2);
 
-  segments.push_back(initial - direction - direction - direction - direction - direction - direction - direction - direction);
-  segments.push_back(initial - direction - direction - direction - direction - direction - direction - direction);
-  segments.push_back(initial - direction - direction - direction - direction - direction - direction);
-  segments.push_back(initial - direction - direction - direction - direction - direction);
-  segments.push_back(initial - direction - direction - direction - direction);
-  segments.push_back(initial - direction - direction - direction);
-  segments.push_back(initial - direction - direction);
+  // segments.push_back(initial - direction - direction - direction - direction - direction - direction - direction - direction);
+  // segments.push_back(initial - direction - direction - direction - direction - direction - direction - direction);
+  // segments.push_back(initial - direction - direction - direction - direction - direction - direction);
+  // segments.push_back(initial - direction - direction - direction - direction - direction);
+  // segments.push_back(initial - direction - direction - direction - direction);
+  // segments.push_back(initial - direction - direction - direction);
+  // segments.push_back(initial - direction - direction);
   segments.push_back(initial - direction);
   segments.push_back(initial);
-  segments.push_back(initial + direction);
-  segments.push_back(initial + direction + direction);
-  segments.push_back(initial + direction + direction + direction);
-  segments.push_back(initial + direction + direction + direction + direction);
-  segments.push_back(initial + direction + direction + direction + direction + direction);
-  segments.push_back(initial + direction + direction + direction + direction + direction + direction);
-  segments.push_back(initial + direction + direction + direction + direction + direction + direction + direction);
-  segments.push_back(initial + direction + direction + direction + direction + direction + direction + direction + direction);
+  // segments.push_back(initial + direction);
+  // segments.push_back(initial + direction + direction);
+  // segments.push_back(initial + direction + direction + direction);
+  // segments.push_back(initial + direction + direction + direction + direction);
+  // segments.push_back(initial + direction + direction + direction + direction + direction);
+  // segments.push_back(initial + direction + direction + direction + direction + direction + direction);
+  // segments.push_back(initial + direction + direction + direction + direction + direction + direction + direction);
+  // segments.push_back(initial + direction + direction + direction + direction + direction + direction + direction + direction);
 
   food.generate(segments);
 };

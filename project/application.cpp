@@ -5,10 +5,10 @@
 const float scaleCube = 2;
 const glm::vec3 scaleCubeVec = glm::vec3(scaleCube);
 
-const float lightOffset = 2 * scaleCube;
+const float lightConeCos = 0.95f;
 
-const float alphaSnake = 1.0;
-const float alphaWall = 0.025;
+const float alphaSnake = 1.0f;
+const float alphaWall = 0.025f;
 
 Application::Application(size_t initial_width, size_t initial_height) {
   this->width = initial_width;
@@ -29,25 +29,16 @@ Application::Application(size_t initial_width, size_t initial_height) {
   uboCamera.projection = glm::perspective(glm::radians(45.0f), float(width) / float(height), 0.01f, 1000.0f);
 
   // Lights
-  std::vector<glm::vec4> edges = {
-      glm::vec4(48, 48, 48, 1.0),
-      // glm::vec4(settings::size * scaleCube + lightOffset, -lightOffset, -lightOffset, 1.0),
-      // glm::vec4(settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, -lightOffset, 1.0),
-      // glm::vec4(settings::size * scaleCube + lightOffset, -lightOffset, settings::size * scaleCube + lightOffset, 1.0),
-      // glm::vec4(settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, 1.0),
-      // glm::vec4(-lightOffset, settings::size * scaleCube + lightOffset, -lightOffset, 1.0),
-      // glm::vec4(-lightOffset, settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, 1.0),
-      // glm::vec4(-lightOffset, -lightOffset, settings::size * scaleCube + lightOffset, 1.0),
-  };
-  for (auto edge : edges) {
-    lights.push_back({
-        edge,
-        glm::vec4(0, 0, 0, -1),
-        glm::vec4(1.0), // ambient
-        glm::vec4(1.0), // diffuse
-        glm::vec4(1.0), // specular
-    });
-  }
+  glm::vec4 ambient(0.2f);
+  glm::vec4 diffuse(0.5f); 
+  glm::vec4 specular(1.0f);
+
+  auto arenaSize = settings::size * scaleCube;
+
+  lights.push_back({glm::vec4(0, arenaSize, 0, 1.0), glm::vec4(0.5, -1, 0.5, lightConeCos), ambient, diffuse, specular});
+  lights.push_back({glm::vec4(arenaSize, arenaSize, 0, 1.0), glm::vec4(-0.5, -1, 0.5, lightConeCos), ambient, diffuse, specular});
+  lights.push_back({glm::vec4(0, arenaSize, arenaSize, 1.0), glm::vec4(0.5, -1, -0.5, lightConeCos), ambient, diffuse, specular});
+  lights.push_back({glm::vec4(arenaSize, arenaSize, arenaSize, 1.0), glm::vec4(-0.5, -1, -0.5, lightConeCos), ambient, diffuse, specular});
 
   // Initial walls
   fillWalls();
@@ -182,13 +173,13 @@ void Application::fillSnake() {
   auto foodPosition = game->food->render();
   auto snakePositions = game->snake->render();
 
-  auto ambient = game->state == GameState::Crashed ? glm::vec4(0.2, 0, 0, 1.0) : glm::vec4(0.5);
-  auto diffuse = game->state == GameState::Crashed ? glm::vec4(0.8, 0, 0, 1.0) : glm::vec4(1.0);
-  auto specular = game->state == GameState::Crashed ? glm::vec4(0.8, 0, 0, 4.0) : glm::vec4(1.0, 1.0, 1.0, 4);
+  auto ambient = game->state == GameState::Crashed ? glm::vec4(1.0, 0, 0, 1.0) : glm::vec4(1.0);
+  auto diffuse = game->state == GameState::Crashed ? glm::vec4(1.0, 0, 0, 1.0) : glm::vec4(1.0);
+  auto specular = game->state == GameState::Crashed ? glm::vec4(1.0, 0, 0, 4.0) : glm::vec4(1.0, 1.0, 1.0, 4);
 
   snake.push_back({
       glm::translate(glm::mat4(1.0), foodPosition * scaleCubeVec),
-      glm::vec4(0.5),
+      glm::vec4(0.25),
       glm::vec4(1.0),
       glm::vec4(1.0, 1.0, 1.0, 4),
   });
