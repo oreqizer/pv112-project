@@ -60,6 +60,7 @@ void main()
 		vec3 color = ambient.rgb
 			+ NdotL * diffuse.rgb 
 			+ pow(NdotH, object.specular_color.w) * specular.rgb;
+		color /= length(light_vector);
 
 		color_sum += color;
 	}

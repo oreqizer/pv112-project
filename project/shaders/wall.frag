@@ -49,7 +49,9 @@ void main()
     float g = sin(object.dist.x / size + time + 3.14) / 2 + 0.5;
     float b = sin(object.dist.x / size + time + 3.14 / 2) / 2 + 0.5;
 
+	vec3 object_ambient = object.ambient_color.rgb * vec3(r, g, b);
 	vec3 object_diffuse = object.diffuse_color.rgb * vec3(r, g, b);
+	vec3 object_specular = object.specular_color.rgb * vec3(r, g, b);
 
 	for (int i = 0; i < lights.length(); i++) {
 		Light light = lights[i];
@@ -62,13 +64,14 @@ void main()
 		float NdotL = max(dot(N, L), 0.0);
 		float NdotH = max(dot(N, H), 0.0001);
 
-		vec3 ambient = object.ambient_color.rgb * light.ambient_color.rgb;
+		vec3 ambient = object_ambient * light.ambient_color.rgb;
 		vec3 diffuse = object_diffuse * light.diffuse_color.rgb;
-		vec3 specular = object.specular_color.rgb * light.specular_color.rgb;
+		vec3 specular = object_specular * light.specular_color.rgb;
 
 		vec3 color = ambient.rgb
 			+ NdotL * diffuse.rgb 
 			+ pow(NdotH, object.specular_color.w) * specular.rgb;
+		color /= length(light_vector);
 
 		color_sum += color;
 	}

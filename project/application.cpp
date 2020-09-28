@@ -4,6 +4,9 @@
 
 const float scaleCube = 2;
 const glm::vec3 scaleCubeVec = glm::vec3(scaleCube);
+
+const float lightOffset = 2 * scaleCube;
+
 const float alphaSnake = 0.75;
 const float alphaWall = 0.05;
 
@@ -27,21 +30,21 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   // Lights
   std::vector<glm::vec4> edges = {
-      glm::vec4(-settings::size, -settings::size, -settings::size, 1.0),
-      glm::vec4(settings::size * scaleCube, -settings::size, -settings::size, 1.0),
-      glm::vec4(settings::size * scaleCube, settings::size * scaleCube, -settings::size, 1.0),
-      glm::vec4(settings::size * scaleCube, -settings::size, settings::size * scaleCube, 1.0),
-      glm::vec4(settings::size * scaleCube, settings::size * scaleCube, settings::size * scaleCube, 1.0),
-      glm::vec4(-settings::size, settings::size * scaleCube, -settings::size, 1.0),
-      glm::vec4(-settings::size, settings::size * scaleCube, settings::size * scaleCube, 1.0),
-      glm::vec4(-settings::size, -settings::size, settings::size * scaleCube, 1.0),
+      glm::vec4(-lightOffset, -lightOffset, -lightOffset, 1.0),
+      glm::vec4(settings::size * scaleCube + lightOffset, -lightOffset, -lightOffset, 1.0),
+      glm::vec4(settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, -lightOffset, 1.0),
+      glm::vec4(settings::size * scaleCube + lightOffset, -lightOffset, settings::size * scaleCube + lightOffset, 1.0),
+      glm::vec4(settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, 1.0),
+      glm::vec4(-lightOffset, settings::size * scaleCube + lightOffset, -lightOffset, 1.0),
+      glm::vec4(-lightOffset, settings::size * scaleCube + lightOffset, settings::size * scaleCube + lightOffset, 1.0),
+      glm::vec4(-lightOffset, -lightOffset, settings::size * scaleCube + lightOffset, 1.0),
   };
   for (auto edge : edges) {
     lights.push_back({
         edge,
-        glm::vec4(0.0), // ambient
+        glm::vec4(1.0), // ambient
         glm::vec4(1.0), // diffuse
-        glm::vec4(0.0), // specular
+        glm::vec4(1.0), // specular
     });
   }
 
@@ -106,6 +109,7 @@ void Application::render() {
 
   glViewport(0, 0, this->width, this->height);
 
+  // === 1. BLEND ===
   glEnable(GL_BLEND);  
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -159,9 +163,9 @@ void Application::fillWalls() {
 
     walls.push_back({
         translate,             // position
-        glm::vec4(0.0),        // ambient
+        glm::vec4(1.0),        // ambient
         glm::vec4(1.0),        // diffuse
-        glm::vec4(0.0),        // specular
+        glm::vec4(1.0),        // specular
         glm::vec4(distance, 0.0, 0.0, 0.0),
     });
   }
@@ -173,13 +177,12 @@ void Application::fillSnake() {
   auto foodPosition = game->food->render();
   auto snakePositions = game->snake->render();
 
-  auto ambient = glm::vec4(0.0);
-  auto diffuse = game->state == GameState::Crashed ? glm::vec4(0.8, 0, 0, 1.0) : glm::vec4(1.0);
-  auto specular = glm::vec4(0.0);
+  auto light = game->state == GameState::Crashed ? glm::vec4(0.8, 0, 0, 1.0) : glm::vec4(1.0);
+  auto specular = glm::vec4(1.0);
 
   snake.push_back({
       glm::translate(glm::mat4(1.0), foodPosition * scaleCubeVec),
-      ambient,
+      glm::vec4(1.0),
       glm::vec4(1.0),
       specular,
   });
@@ -190,8 +193,8 @@ void Application::fillSnake() {
 
     snake.push_back({
         translate,
-        ambient,
-        diffuse,
+        light,
+        light,
         specular,
     });
   }
