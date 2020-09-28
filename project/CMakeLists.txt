@@ -14,8 +14,8 @@ set(IRRKLANG_LIBRARIES
 add_custom_command(TARGET project POST_BUILD
   # TODO cleanup, add release
   # Debug
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../libs/irrklang/bin/Winx64-visualStudio/irrKlang.dll ${CMAKE_BINARY_DIR}/project/Debug
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../libs/irrklang/bin/Winx64-visualStudio/ikpMP3.dll ${CMAKE_BINARY_DIR}/project/Debug
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../libs/irrklang/bin/Winx64-visualStudio/irrKlang.dll ${CMAKE_CURRENT_BINARY_DIR}/Debug
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../libs/irrklang/bin/Winx64-visualStudio/ikpMP3.dll ${CMAKE_CURRENT_BINARY_DIR}/Debug
 )
 
 # FREETYPE library
@@ -28,7 +28,7 @@ set(FREETYPE_LIBRARIES
 add_custom_command(TARGET project POST_BUILD
   # TODO cleanup, add release
   # Debug
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../libs/freetype/win64/freetype.dll ${CMAKE_BINARY_DIR}/project/Debug
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/../libs/freetype/win64/freetype.dll ${CMAKE_CURRENT_BINARY_DIR}/Debug
 )
 
 add_dependencies(project glfw glad framework)
@@ -54,8 +54,14 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/snake.vert" "${CMAKE_CURRENT
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/snake.frag" "${CMAKE_CURRENT_BINARY_DIR}/shaders/snake.frag" COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/wall.vert" "${CMAKE_CURRENT_BINARY_DIR}/shaders/wall.vert" COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/wall.frag" "${CMAKE_CURRENT_BINARY_DIR}/shaders/wall.frag" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/text.vert" "${CMAKE_CURRENT_BINARY_DIR}/shaders/text.vert" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/shaders/text.frag" "${CMAKE_CURRENT_BINARY_DIR}/shaders/text.frag" COPYONLY)
 
 # Sound
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/sound/crunch.mp3" "${CMAKE_CURRENT_BINARY_DIR}/sound/crunch.mp3" COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/sound/portal.mp3" "${CMAKE_CURRENT_BINARY_DIR}/sound/portal.mp3" COPYONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/sound/trombone.mp3" "${CMAKE_CURRENT_BINARY_DIR}/sound/trombone.mp3" COPYONLY)
+
+# Font
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/fonts/bebas.ttf" "${CMAKE_CURRENT_BINARY_DIR}/fonts/arial.ttf" COPYONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/fonts/bebas.ttf" "${CMAKE_CURRENT_BINARY_DIR}/fonts/bebas.ttf" COPYONLY)

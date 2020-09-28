@@ -64,14 +64,18 @@ public:
   void update();
   void render();
 
-  void fillWalls();
-  void fillSnake();
-
   void onResize(GLFWwindow *window, int width, int height);
   void onMouseMove(GLFWwindow *window, double x, double y);
   void onKeyPressed(GLFWwindow *window, int key, int scancode, int action, int mods);
 
 private:
+  void fillWalls();
+  void fillSnake();
+
+  void printScore(int score);
+  void printRIP();
+  void printInit();
+
   size_t width;
   size_t height;
 
@@ -82,6 +86,7 @@ private:
   // Programs
   GLuint programSnake = create_program("../shaders/snake.vert", "../shaders/snake.frag");
   GLuint programWall = create_program("../shaders/wall.vert", "../shaders/wall.frag");
+  GLuint programText = create_program("../shaders/text.vert", "../shaders/text.frag");
 
   // Objects
   Mesh cube = Mesh::cube();

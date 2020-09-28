@@ -20,6 +20,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   Audio::play(Audio::background, true);
 
+  printInit();
+
   // --------------------------------------------------------------------------
   // Initialize UBO Data
   // --------------------------------------------------------------------------
@@ -34,7 +36,7 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   // Lights
   glm::vec4 ambient(0.2f);
-  glm::vec4 diffuse(0.5f); 
+  glm::vec4 diffuse(0.5f);
   glm::vec4 specular(1.0f);
 
   auto arenaSize = settings::size * scaleCube;
@@ -58,7 +60,8 @@ Application::Application(size_t initial_width, size_t initial_height) {
   glNamedBufferStorage(bufferLights, lights.size() * sizeof(LightUBO), lights.data(), GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferSnake);
-  glNamedBufferStorage(bufferSnake, settings::size * settings::size * settings::size * sizeof(SnakeUBO), snake.data(), GL_DYNAMIC_STORAGE_BIT);
+  glNamedBufferStorage(bufferSnake, settings::size * settings::size * settings::size * sizeof(SnakeUBO), snake.data(),
+                       GL_DYNAMIC_STORAGE_BIT);
 
   glCreateBuffers(1, &bufferWalls);
   glNamedBufferStorage(bufferWalls, walls.size() * sizeof(WallUBO), walls.data(), GL_DYNAMIC_STORAGE_BIT);
@@ -106,7 +109,7 @@ void Application::render() {
   glViewport(0, 0, this->width, this->height);
 
   // === 1. BLEND ===
-  glEnable(GL_BLEND);  
+  glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Snake and food
@@ -125,7 +128,7 @@ void Application::render() {
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
                           static_cast<GLsizei>(snake.size()));
-                          
+
   glDisable(GL_DEPTH_TEST);
 
   // Walls
@@ -162,10 +165,10 @@ void Application::fillWalls() {
     auto translate = glm::translate(glm::mat4(1.0), position);
 
     walls.push_back({
-        translate,             // position
-        glm::vec4(1.0),        // ambient
-        glm::vec4(1.0),        // diffuse
-        glm::vec4(1.0),        // specular
+        translate,      // position
+        glm::vec4(1.0), // ambient
+        glm::vec4(1.0), // diffuse
+        glm::vec4(1.0), // specular
         glm::vec4(distance, 0.0, 0.0, 0.0),
     });
   }
@@ -198,6 +201,48 @@ void Application::fillSnake() {
         diffuse,
         specular,
     });
+  }
+}
+
+void Application::printScore(int score) {
+  //
+}
+
+void Application::printRIP() {
+  //
+}
+
+void Application::printInit() {
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
+
+  FT_Face face = game->gui->face;
+
+  for (unsigned char c = 0; c < 128; c++) {
+    // load character glyph
+    auto err = FT_Load_Char(face, c, FT_LOAD_RENDER);
+    if (err) {
+      std::cout << "ERROR::FREETYTPE: Failed to load Glyph: " << err << std::endl;
+      continue;
+    }
+
+    // generate texture
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE,
+                 face->glyph->bitmap.buffer);
+
+    // set texture options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // now store character for later use
+    Character character = {texture, glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                           glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top), face->glyph->advance.x};
+
+    game->gui->characters.insert(std::pair<char, Character>(c, character));
   }
 }
 

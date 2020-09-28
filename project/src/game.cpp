@@ -10,6 +10,7 @@ Game::Game() {
   food = new Food();
   snake = new Snake(*food);
   world = new World();
+  gui = new Gui();
 }
 
 void Game::update() {
@@ -32,4 +33,5 @@ Game::~Game() {
   delete(snake);
   delete(food);
   delete(world);
+  delete(gui);
 }
