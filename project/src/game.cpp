@@ -29,6 +29,11 @@ void Game::update() {
   }
 }
 
+void Game::reset() {
+  food = new Food();
+  snake = new Snake(*food);
+}
+
 Game::~Game() {
   delete(snake);
   delete(food);

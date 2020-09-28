@@ -28,6 +28,7 @@ public:
   void update();
   void turn(Arrow arrow);
   void move();
+  int score();
   bool isCrashed();
   bool isNextMovable();
   bool isColliding(const glm::vec3 &pos);

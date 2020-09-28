@@ -116,6 +116,10 @@ void Snake::move() {
   moveTimer = std::chrono::milliseconds(0);
 }
 
+int Snake::score() {
+  return segments.size() - 2; // subtract nitial two
+}
+
 bool Snake::isCrashed() {
   if (segments.size() <= settings::speed::slow) {
     if (moveTimer.count() > settings::speedMs::slow) {

@@ -106,4 +106,9 @@ private:
   // Walls
   std::vector<WallUBO> walls;
   GLuint bufferWalls = 0;
+
+  // GUI
+  GLuint vaoGui;
+  GLuint vboGui;
+  GLuint bufferGui;
 };

@@ -65,6 +65,18 @@ Application::Application(size_t initial_width, size_t initial_height) {
 
   glCreateBuffers(1, &bufferWalls);
   glNamedBufferStorage(bufferWalls, walls.size() * sizeof(WallUBO), walls.data(), GL_DYNAMIC_STORAGE_BIT);
+
+  glGenVertexArrays(1, &vaoGui);
+  glGenBuffers(1, &vboGui);
+
+  glBindVertexArray(vaoGui);
+  glBindBuffer(GL_ARRAY_BUFFER, vboGui);
+
+  glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindVertexArray(0);  
 }
 
 Application::~Application() {
@@ -149,6 +161,18 @@ void Application::render() {
   glBindVertexArray(cube.get_vao());
   glDrawElementsInstanced(cube.get_mode(), static_cast<GLsizei>(cube.get_indices_count()), GL_UNSIGNED_INT, nullptr,
                           static_cast<GLsizei>(walls.size()));
+
+  // Gui
+  glUseProgram(programText);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
+
+  if (game->state == GameState::Crashed) {
+    printRIP();
+  } else {
+    printScore(game->snake->score());
+  }
 }
 
 void Application::fillWalls() {
@@ -205,11 +229,101 @@ void Application::fillSnake() {
 }
 
 void Application::printScore(int score) {
-  //
+  std::string text = std::to_string(score);
+  glm::vec3 color(1.0f);
+
+  float x = -0.02;
+  float y = -0.9;
+  float scale = 0.002;
+
+  auto characters = game->gui->characters;
+  // activate corresponding render state
+  glUniform3f(glGetUniformLocation(programText, "textColor"), color.x, color.y, color.z);
+  glActiveTexture(GL_TEXTURE0);
+  glBindVertexArray(vaoGui);
+
+  // iterate through all characters
+  std::string::const_iterator c;
+  for (c = text.begin(); c != text.end(); c++) {
+    Character ch = characters[*c];
+
+    float xpos = x + ch.bearing.x * scale;
+    float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+    float w = ch.size.x * scale;
+    float h = ch.size.y * scale;
+    // update VBO for each character
+    float vertices[6][4] = {
+        { xpos,     ypos + h,   0.0f, 0.0f },            
+        { xpos,     ypos,       0.0f, 1.0f },
+        { xpos + w, ypos,       1.0f, 1.0f },
+
+        { xpos,     ypos + h,   0.0f, 0.0f },
+        { xpos + w, ypos,       1.0f, 1.0f },
+        { xpos + w, ypos + h,   1.0f, 0.0f }           
+    };
+    // render glyph texture over quad
+    glBindTexture(GL_TEXTURE_2D, ch.textureID);
+    // update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, vboGui);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // render quad
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+    x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+  }
+  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Application::printRIP() {
-  //
+  std::string text = "[SPACE to restart]";
+  glm::vec3 color(1.0f);
+
+  float x = -0.35;
+  float y = -0.9;
+  float scale = 0.002;
+
+  auto characters = game->gui->characters;
+  // activate corresponding render state
+  glUniform3f(glGetUniformLocation(programText, "textColor"), color.x, color.y, color.z);
+  glActiveTexture(GL_TEXTURE0);
+  glBindVertexArray(vaoGui);
+
+  // iterate through all characters
+  std::string::const_iterator c;
+  for (c = text.begin(); c != text.end(); c++) {
+    Character ch = characters[*c];
+
+    float xpos = x + ch.bearing.x * scale;
+    float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+
+    float w = ch.size.x * scale;
+    float h = ch.size.y * scale;
+    // update VBO for each character
+    float vertices[6][4] = {
+        { xpos,     ypos + h,   0.0f, 0.0f },            
+        { xpos,     ypos,       0.0f, 1.0f },
+        { xpos + w, ypos,       1.0f, 1.0f },
+
+        { xpos,     ypos + h,   0.0f, 0.0f },
+        { xpos + w, ypos,       1.0f, 1.0f },
+        { xpos + w, ypos + h,   1.0f, 0.0f }           
+    };
+    // render glyph texture over quad
+    glBindTexture(GL_TEXTURE_2D, ch.textureID);
+    // update content of VBO memory
+    glBindBuffer(GL_ARRAY_BUFFER, vboGui);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // render quad
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+    x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
+  }
+  glBindVertexArray(0);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Application::printInit() {
@@ -275,7 +389,7 @@ void Application::onKeyPressed(GLFWwindow *window, int key, int scancode, int ac
       game->snake->turn(Arrow::Forward);
       break;
     case GLFW_KEY_SPACE:
-      game = new Game();
+      game->reset();
       break;
     }
   }

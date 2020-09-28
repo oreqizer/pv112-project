@@ -23,6 +23,7 @@ public:
   ~Game();
 
   void update();
+  void reset();
 
   Food *food;
   Snake *snake;
