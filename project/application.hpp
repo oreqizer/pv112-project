@@ -74,6 +74,7 @@ private:
 
   void printScore(int score);
   void printRIP();
+  void printStuff(const std::string& text, const glm::vec3& color, float x, float y, float scale);
   void printInit();
 
   size_t width;

@@ -236,45 +236,7 @@ void Application::printScore(int score) {
   float y = -0.9;
   float scale = 0.002;
 
-  auto characters = game->gui->characters;
-  // activate corresponding render state
-  glUniform3f(glGetUniformLocation(programText, "textColor"), color.x, color.y, color.z);
-  glActiveTexture(GL_TEXTURE0);
-  glBindVertexArray(vaoGui);
-
-  // iterate through all characters
-  std::string::const_iterator c;
-  for (c = text.begin(); c != text.end(); c++) {
-    Character ch = characters[*c];
-
-    float xpos = x + ch.bearing.x * scale;
-    float ypos = y - (ch.size.y - ch.bearing.y) * scale;
-
-    float w = ch.size.x * scale;
-    float h = ch.size.y * scale;
-    // update VBO for each character
-    float vertices[6][4] = {
-        { xpos,     ypos + h,   0.0f, 0.0f },            
-        { xpos,     ypos,       0.0f, 1.0f },
-        { xpos + w, ypos,       1.0f, 1.0f },
-
-        { xpos,     ypos + h,   0.0f, 0.0f },
-        { xpos + w, ypos,       1.0f, 1.0f },
-        { xpos + w, ypos + h,   1.0f, 0.0f }           
-    };
-    // render glyph texture over quad
-    glBindTexture(GL_TEXTURE_2D, ch.textureID);
-    // update content of VBO memory
-    glBindBuffer(GL_ARRAY_BUFFER, vboGui);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    // render quad
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-    x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64)
-  }
-  glBindVertexArray(0);
-  glBindTexture(GL_TEXTURE_2D, 0);
+  printStuff(text, color, x, y, scale);
 }
 
 void Application::printRIP() {
@@ -285,7 +247,12 @@ void Application::printRIP() {
   float y = -0.9;
   float scale = 0.002;
 
+  printStuff(text, color, x, y, scale);
+}
+
+void Application::printStuff(const std::string& text, const glm::vec3& color, float x, float y, float scale) {
   auto characters = game->gui->characters;
+
   // activate corresponding render state
   glUniform3f(glGetUniformLocation(programText, "textColor"), color.x, color.y, color.z);
   glActiveTexture(GL_TEXTURE0);

@@ -32,6 +32,8 @@ void Game::update() {
 void Game::reset() {
   food = new Food();
   snake = new Snake(*food);
+
+  state = GameState::Playing;
 }
 
 Game::~Game() {
